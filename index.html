@@ -26,7 +26,7 @@
       font-family: 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
       background: var(--gray-bg);
       color: #1f2937;
-      font-size: 13px;
+      font-size: 15px;
     }
 
     /* ── HEADER ── */
@@ -42,8 +42,8 @@
       z-index: 100;
       box-shadow: 0 2px 8px rgba(0,0,0,.25);
     }
-    header h1 { font-size: 17px; font-weight: 700; letter-spacing: .03em; }
-    header .hint { font-size: 11px; opacity: .75; }
+    header h1 { font-size: 20px; font-weight: 700; letter-spacing: .03em; }
+    header .hint { font-size: 13px; opacity: .75; }
 
     /* ── LAYOUT ── */
     .container { display: flex; height: calc(100vh - 52px); }
@@ -60,8 +60,8 @@
     .s-section { border-bottom: 1px solid var(--gray-border); }
 
     .s-head {
-      padding: 10px 14px;
-      font-size: 11px;
+      padding: 12px 14px;
+      font-size: 13px;
       font-weight: 700;
       letter-spacing: .04em;
       cursor: pointer;
@@ -71,19 +71,19 @@
       user-select: none;
     }
     .s-head:hover { filter: brightness(.97); }
-    .s-head .arrow { transition: transform .2s; font-size: 10px; }
+    .s-head .arrow { transition: transform .2s; font-size: 12px; }
     .s-head.open .arrow { transform: rotate(90deg); }
 
     .s-body { padding: 10px 14px 14px; display: none; }
     .s-body.open { display: block; }
 
     .s-sub {
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--gray-text);
       text-transform: uppercase;
       letter-spacing: .05em;
-      margin: 10px 0 5px;
+      margin: 12px 0 6px;
     }
     .s-sub:first-child { margin-top: 0; }
 
@@ -93,16 +93,16 @@
     .field { margin-bottom: 7px; }
     .field label {
       display: block;
-      font-size: 10px;
+      font-size: 12px;
       color: var(--gray-text);
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
     .field input {
       width: 100%;
-      padding: 5px 8px;
+      padding: 7px 10px;
       border: 1px solid #d1d5db;
       border-radius: 5px;
-      font-size: 12px;
+      font-size: 14px;
       text-align: right;
       font-family: 'Courier New', monospace;
     }
@@ -159,16 +159,16 @@
     .sum-card.ri { border-color: var(--green-mid); }
     .sum-card.rm { border-color: #d97706; }
 
-    .sum-card .sc-label { font-size: 11px; color: var(--gray-text); margin-bottom: 6px; }
+    .sum-card .sc-label { font-size: 13px; color: var(--gray-text); margin-bottom: 8px; font-weight: 600; }
     .sum-card .sc-value {
-      font-size: 22px; font-weight: 800;
+      font-size: 28px; font-weight: 800;
       font-family: 'Courier New', monospace;
     }
     .sum-card.ni .sc-value { color: var(--blue-mid); }
     .sum-card.nm .sc-value { color: #7c3aed; }
     .sum-card.ri .sc-value { color: var(--green-mid); }
     .sum-card.rm .sc-value { color: #d97706; }
-    .sc-sub { font-size: 10px; color: #9ca3af; margin-top: 4px; }
+    .sc-sub { font-size: 12px; color: #9ca3af; margin-top: 6px; }
     .negative { color: #dc2626 !important; }
 
     /* ── CHART ── */
@@ -179,15 +179,15 @@
       box-shadow: 0 1px 4px rgba(0,0,0,.08);
     }
     .chart-title {
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 700;
       color: var(--gray-text);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       text-transform: uppercase;
       letter-spacing: .04em;
     }
-    .bar-group { margin-bottom: 10px; }
-    .bar-label { font-size: 11px; color: #374151; margin-bottom: 3px; }
+    .bar-group { margin-bottom: 12px; }
+    .bar-label { font-size: 13px; color: #374151; margin-bottom: 4px; font-weight: 600; }
     .bar-track {
       height: 22px;
       background: #f3f4f6;
@@ -201,7 +201,7 @@
       display: flex;
       align-items: center;
       padding-left: 8px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
       color: #fff;
       transition: width .4s ease;
@@ -230,8 +230,8 @@
     .panel.rep { border-top: 4px solid var(--green-mid); }
 
     .panel-head {
-      padding: 10px 14px;
-      font-size: 13px;
+      padding: 12px 16px;
+      font-size: 15px;
       font-weight: 700;
     }
     .panel.new .panel-head { background: var(--blue-light); color: var(--blue); }
@@ -240,39 +240,83 @@
     table.dtbl {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: 14px;
     }
     .dtbl th {
-      padding: 6px 12px;
+      padding: 8px 12px;
       text-align: left;
-      font-size: 11px;
+      font-size: 13px;
       color: #fff;
     }
     .panel.new .dtbl th { background: var(--blue); }
     .panel.rep .dtbl th { background: var(--green); }
     .dtbl th.r, .dtbl td.r { text-align: right; font-family: 'Courier New', monospace; }
 
-    .dtbl td { padding: 5px 12px; border-bottom: 1px solid #f3f4f6; }
+    .dtbl td { padding: 7px 12px; border-bottom: 1px solid #f3f4f6; }
     .dtbl tr:hover td { background: #fafafa; }
 
     .dtbl tr.section-row td {
       background: #f8fafc;
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--gray-text);
       text-transform: uppercase;
       letter-spacing: .04em;
-      padding: 4px 12px;
+      padding: 6px 12px;
     }
     .dtbl tr.sub td { background: #f3f4f6; font-weight: 600; }
     .dtbl tr.total td { background: #fef9c3; font-weight: 700; }
     .dtbl tr.profit td {
       background: var(--yellow);
       font-weight: 800;
-      font-size: 14px;
+      font-size: 17px;
       color: #78350f;
     }
     .dtbl .indent { padding-left: 22px !important; color: #4b5563; }
+
+    /* ── RESPONSIVE: スマホ対応 ── */
+    @media (max-width: 768px) {
+      /* ヘッダー */
+      header { padding: 12px 16px; }
+      header h1 { font-size: 15px; }
+      header .hint { display: none; }
+
+      /* レイアウト：縦積みに切り替え */
+      .container { flex-direction: column; height: auto; overflow: visible; }
+      body { overflow-y: auto; }
+
+      /* サイドバーを全幅に */
+      aside {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid var(--gray-border);
+        overflow-y: visible;
+      }
+
+      /* メインも全幅 */
+      main { overflow-y: visible; padding: 14px; gap: 14px; }
+
+      /* 入力欄の横並び → 縦積みに */
+      .row2 { flex-direction: column; gap: 0; }
+
+      /* サマリーカード：2列 */
+      .summary-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .sum-card .sc-value { font-size: 20px; }
+      .sum-card { padding: 12px; }
+
+      /* 詳細パネル：1列 */
+      .panels-grid { grid-template-columns: 1fr; }
+
+      /* テーブル文字サイズ縮小（横幅節約） */
+      table.dtbl { font-size: 12px; }
+      .dtbl tr.profit td { font-size: 14px; }
+      .dtbl th { font-size: 11px; padding: 6px 8px; }
+      .dtbl td { padding: 6px 8px; }
+    }
+
+    @media (max-width: 480px) {
+      .summary-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -355,7 +399,7 @@
             <input type="number" id="ni_sc_y5" value="240000" oninput="recalculate()">
           </div>
         </div>
-        <div class="s-sub">残債（与信通過率 100%）</div>
+        <div class="s-sub">残債</div>
         <div class="row2">
           <div class="field">
             <label>割賦1年目（円）</label>
@@ -441,7 +485,7 @@
             <input type="number" id="ri_sc_2" value="240000" oninput="recalculate()">
           </div>
         </div>
-        <div class="s-sub">残債（与信通過率 100%）</div>
+        <div class="s-sub">残債</div>
         <div class="row2">
           <div class="field">
             <label>1件目（円）</label>
