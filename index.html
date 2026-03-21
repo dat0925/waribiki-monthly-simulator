@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>収益比較シミュレーター｜割賦 vs 月額プラン</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #1d4ed8;
+      --blue-light: #eff6ff;
+      --blue-mid:   #2563eb;
+      --green:      #15803d;
+      --green-light:#f0fdf4;
+      --green-mid:  #16a34a;
+      --yellow:     #fef08a;
+      --yellow-dark:#ca8a04;
+      --gray-bg:    #f5f7fa;
+      --gray-border:#e5e7eb;
+      --gray-text:  #6b7280;
+      --radius:     8px;
+    }
+
+    body {
+      font-family: 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+      background: var(--gray-bg);
+      color: #1f2937;
+      font-size: 13px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #0f2557, var(--blue-mid));
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    header h1 { font-size: 17px; font-weight: 700; letter-spacing: .03em; }
+    header .hint { font-size: 11px; opacity: .75; }
+
+    /* ── LAYOUT ── */
+    .container { display: flex; height: calc(100vh - 52px); }
+
+    /* ── SIDEBAR ── */
+    aside {
+      width: 320px;
+      flex-shrink: 0;
+      background: #fff;
+      border-right: 1px solid var(--gray-border);
+      overflow-y: auto;
+    }
+
+    .s-section { border-bottom: 1px solid var(--gray-border); }
+
+    .s-head {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .s-head:hover { filter: brightness(.97); }
+    .s-head .arrow { transition: transform .2s; font-size: 10px; }
+    .s-head.open .arrow { transform: rotate(90deg); }
+
+    .s-body { padding: 10px 14px 14px; display: none; }
+    .s-body.open { display: block; }
+
+    .s-sub {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gray-text);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin: 10px 0 5px;
+    }
+    .s-sub:first-child { margin-top: 0; }
+
+    .row2 { display: flex; gap: 8px; }
+    .row2 .field { flex: 1; }
+
+    .field { margin-bottom: 7px; }
+    .field label {
+      display: block;
+      font-size: 10px;
+      color: var(--gray-text);
+      margin-bottom: 3px;
+    }
+    .field input {
+      width: 100%;
+      padding: 5px 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 5px;
+      font-size: 12px;
+      text-align: right;
+      font-family: 'Courier New', monospace;
+    }
+    .field input:focus {
+      outline: none;
+      border-color: var(--blue-mid);
+      box-shadow: 0 0 0 2px rgba(37,99,235,.15);
+    }
+    .field input[readonly] { background: #f9fafb; color: #9ca3af; }
+
+    /* color themes for sidebar sections */
+    .s-head.theme-common { background: #f1f5f9; color: #334155; }
+    .s-head.theme-new    { background: var(--blue-light); color: var(--blue); }
+    .s-head.theme-rep    { background: var(--green-light); color: var(--green); }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* ── SUMMARY CARDS ── */
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .sum-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      border-top: 4px solid transparent;
+      position: relative;
+    }
+    .sum-card.best-badge::after {
+      content: '★ BEST';
+      position: absolute;
+      top: 6px; right: 8px;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--yellow-dark);
+      background: var(--yellow);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+    .sum-card.ni { border-color: var(--blue-mid); }
+    .sum-card.nm { border-color: #7c3aed; }
+    .sum-card.ri { border-color: var(--green-mid); }
+    .sum-card.rm { border-color: #d97706; }
+
+    .sum-card .sc-label { font-size: 11px; color: var(--gray-text); margin-bottom: 6px; }
+    .sum-card .sc-value {
+      font-size: 22px; font-weight: 800;
+      font-family: 'Courier New', monospace;
+    }
+    .sum-card.ni .sc-value { color: var(--blue-mid); }
+    .sum-card.nm .sc-value { color: #7c3aed; }
+    .sum-card.ri .sc-value { color: var(--green-mid); }
+    .sum-card.rm .sc-value { color: #d97706; }
+    .sc-sub { font-size: 10px; color: #9ca3af; margin-top: 4px; }
+    .negative { color: #dc2626 !important; }
+
+    /* ── CHART ── */
+    .chart-wrap {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .chart-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray-text);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .bar-group { margin-bottom: 10px; }
+    .bar-label { font-size: 11px; color: #374151; margin-bottom: 3px; }
+    .bar-track {
+      height: 22px;
+      background: #f3f4f6;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      transition: width .4s ease;
+      white-space: nowrap;
+      min-width: 60px;
+    }
+    .bar-fill.ni { background: var(--blue-mid); }
+    .bar-fill.nm { background: #7c3aed; }
+    .bar-fill.ri { background: var(--green-mid); }
+    .bar-fill.rm { background: #d97706; }
+
+    /* ── DETAIL PANELS ── */
+    .panels-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .panel {
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .panel.new { border-top: 4px solid var(--blue-mid); }
+    .panel.rep { border-top: 4px solid var(--green-mid); }
+
+    .panel-head {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .panel.new .panel-head { background: var(--blue-light); color: var(--blue); }
+    .panel.rep .panel-head { background: var(--green-light); color: var(--green); }
+
+    table.dtbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .dtbl th {
+      padding: 6px 12px;
+      text-align: left;
+      font-size: 11px;
+      color: #fff;
+    }
+    .panel.new .dtbl th { background: var(--blue); }
+    .panel.rep .dtbl th { background: var(--green); }
+    .dtbl th.r, .dtbl td.r { text-align: right; font-family: 'Courier New', monospace; }
+
+    .dtbl td { padding: 5px 12px; border-bottom: 1px solid #f3f4f6; }
+    .dtbl tr:hover td { background: #fafafa; }
+
+    .dtbl tr.section-row td {
+      background: #f8fafc;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gray-text);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      padding: 4px 12px;
+    }
+    .dtbl tr.sub td { background: #f3f4f6; font-weight: 600; }
+    .dtbl tr.total td { background: #fef9c3; font-weight: 700; }
+    .dtbl tr.profit td {
+      background: var(--yellow);
+      font-weight: 800;
+      font-size: 14px;
+      color: #78350f;
+    }
+    .dtbl .indent { padding-left: 22px !important; color: #4b5563; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>💴 割賦 vs 月額プラン｜収益比較シミュレーター</h1>
+  <span class="hint">数値を変更すると自動で再計算されます</span>
+</header>
+
+<div class="container">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside>
+
+    <!-- 共通設定 -->
+    <div class="s-section">
+      <div class="s-head theme-common open" onclick="toggleSection(this)">
+        📋 共通・前提条件 <span class="arrow open">▶</span>
+      </div>
+      <div class="s-body open">
+        <div class="s-sub">試算期間</div>
+        <div class="row2">
+          <div class="field">
+            <label>年数</label>
+            <input type="number" id="years" value="10" min="1" max="30" oninput="syncMonths();recalculate()">
+          </div>
+          <div class="field">
+            <label>月数（自動）</label>
+            <input type="number" id="months" value="120" readonly>
+          </div>
+        </div>
+        <div class="s-sub">与信通過率</div>
+        <div class="row2">
+          <div class="field">
+            <label>割賦 1年目（%）</label>
+            <input type="number" id="cr_y1" value="82" min="0" max="100" step="0.1" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>割賦 5年目（%）</label>
+            <input type="number" id="cr_y5" value="96" min="0" max="100" step="0.1" oninput="recalculate()">
+          </div>
+        </div>
+        <div class="s-sub">獲得コスト</div>
+        <div class="field">
+          <label>単価（円）</label>
+          <input type="number" id="acq_unit" value="800000" oninput="recalculate()">
+        </div>
+      </div>
+    </div>
+
+    <!-- 新規 / 割賦 -->
+    <div class="s-section">
+      <div class="s-head theme-new open" onclick="toggleSection(this)">
+        🔵 新規獲得 / 割賦プラン <span class="arrow open">▶</span>
+      </div>
+      <div class="s-body open">
+        <div class="s-sub">ショット売上</div>
+        <div class="row2">
+          <div class="field">
+            <label>割賦1年目（円）</label>
+            <input type="number" id="ni_ss_y1" value="1130000" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>割賦5年目（円）</label>
+            <input type="number" id="ni_ss_y5" value="1440000" oninput="recalculate()">
+          </div>
+        </div>
+        <div class="field">
+          <label>ストック売上（月額・円）</label>
+          <input type="number" id="ni_stk_s" value="3000" oninput="recalculate()">
+        </div>
+        <div class="s-sub">ショット原価</div>
+        <div class="row2">
+          <div class="field">
+            <label>割賦1年目（円）</label>
+            <input type="number" id="ni_sc_y1" value="240000" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>割賦5年目（円）</label>
+            <input type="number" id="ni_sc_y5" value="240000" oninput="recalculate()">
+          </div>
+        </div>
+        <div class="s-sub">残債（与信通過率 100%）</div>
+        <div class="row2">
+          <div class="field">
+            <label>割賦1年目（円）</label>
+            <input type="number" id="ni_db_y1" value="0" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>割賦5年目（円）</label>
+            <input type="number" id="ni_db_y5" value="370000" oninput="recalculate()">
+          </div>
+        </div>
+        <div class="field">
+          <label>ストック原価（月額・円）</label>
+          <input type="number" id="ni_stk_c" value="1319" oninput="recalculate()">
+        </div>
+        <div class="s-sub">獲得コスト 平均値</div>
+        <div class="row2">
+          <div class="field">
+            <label>割賦1年目</label>
+            <input type="number" id="ni_avg_y1" value="1.5" step="0.1" min="0.1" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>割賦5年目</label>
+            <input type="number" id="ni_avg_y5" value="5.0" step="0.1" min="0.1" oninput="recalculate()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 新規 / 月額 -->
+    <div class="s-section">
+      <div class="s-head theme-new open" onclick="toggleSection(this)">
+        🔵 新規獲得 / 月額プラン <span class="arrow open">▶</span>
+      </div>
+      <div class="s-body open">
+        <div class="field">
+          <label>月額売上（月額・円）</label>
+          <input type="number" id="nm_sales" value="15000" oninput="recalculate()">
+        </div>
+        <div class="field">
+          <label>ストック原価（月額・円）</label>
+          <input type="number" id="nm_stk_c" value="1908" oninput="recalculate()">
+        </div>
+        <div class="field">
+          <label>初期制作費（一括・円）</label>
+          <input type="number" id="nm_init_c" value="25000" oninput="recalculate()">
+        </div>
+        <div class="field">
+          <label>獲得コスト 平均値</label>
+          <input type="number" id="nm_avg" value="3.0" step="0.1" min="0.1" oninput="recalculate()">
+        </div>
+      </div>
+    </div>
+
+    <!-- リプレイス / 割賦 -->
+    <div class="s-section">
+      <div class="s-head theme-rep open" onclick="toggleSection(this)">
+        🟢 リプレイス / 割賦プラン <span class="arrow open">▶</span>
+      </div>
+      <div class="s-body open">
+        <div class="s-sub">ショット売上</div>
+        <div class="row2">
+          <div class="field">
+            <label>1件目（円）</label>
+            <input type="number" id="ri_ss_1" value="1440000" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>2件目（円）</label>
+            <input type="number" id="ri_ss_2" value="1440000" oninput="recalculate()">
+          </div>
+        </div>
+        <div class="field">
+          <label>ストック売上（月額・円）</label>
+          <input type="number" id="ri_stk_s" value="3000" oninput="recalculate()">
+        </div>
+        <div class="s-sub">ショット原価</div>
+        <div class="row2">
+          <div class="field">
+            <label>1件目（円）</label>
+            <input type="number" id="ri_sc_1" value="240000" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>2件目（円）</label>
+            <input type="number" id="ri_sc_2" value="240000" oninput="recalculate()">
+          </div>
+        </div>
+        <div class="s-sub">残債（与信通過率 100%）</div>
+        <div class="row2">
+          <div class="field">
+            <label>1件目（円）</label>
+            <input type="number" id="ri_db_1" value="370000" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>2件目（円）</label>
+            <input type="number" id="ri_db_2" value="370000" oninput="recalculate()">
+          </div>
+        </div>
+        <div class="field">
+          <label>ストック原価（月額・円）</label>
+          <input type="number" id="ri_stk_c" value="1319" oninput="recalculate()">
+        </div>
+        <div class="s-sub">獲得コスト 平均値</div>
+        <div class="row2">
+          <div class="field">
+            <label>1件目</label>
+            <input type="number" id="ri_avg_1" value="5.0" step="0.1" min="0.1" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>2件目</label>
+            <input type="number" id="ri_avg_2" value="5.0" step="0.1" min="0.1" oninput="recalculate()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- リプレイス / 月額 -->
+    <div class="s-section">
+      <div class="s-head theme-rep open" onclick="toggleSection(this)">
+        🟢 リプレイス / 月額プラン <span class="arrow open">▶</span>
+      </div>
+      <div class="s-body open">
+        <div class="field">
+          <label>月額売上（月額・円）</label>
+          <input type="number" id="rm_sales" value="20000" oninput="recalculate()">
+        </div>
+        <div class="field">
+          <label>ストック原価（月額・円）</label>
+          <input type="number" id="rm_stk_c" value="2961" oninput="recalculate()">
+        </div>
+        <div class="field">
+          <label>初期制作費（一括・円）</label>
+          <input type="number" id="rm_init_c" value="25000" oninput="recalculate()">
+        </div>
+        <div class="field">
+          <label>獲得コスト 平均値</label>
+          <input type="number" id="rm_avg" value="6.0" step="0.1" min="0.1" oninput="recalculate()">
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main>
+
+    <!-- サマリーカード -->
+    <div class="summary-row">
+      <div class="sum-card ni" id="card_ni">
+        <div class="sc-label">🔵 新規獲得 / 割賦</div>
+        <div class="sc-value" id="sv_ni">—</div>
+        <div class="sc-sub">試算期間内 利益合計（円）</div>
+      </div>
+      <div class="sum-card nm" id="card_nm">
+        <div class="sc-label">🔵 新規獲得 / 月額プラン</div>
+        <div class="sc-value" id="sv_nm">—</div>
+        <div class="sc-sub">試算期間内 利益合計（円）</div>
+      </div>
+      <div class="sum-card ri" id="card_ri">
+        <div class="sc-label">🟢 リプレイス / 割賦</div>
+        <div class="sc-value" id="sv_ri">—</div>
+        <div class="sc-sub">試算期間内 利益合計（円）</div>
+      </div>
+      <div class="sum-card rm" id="card_rm">
+        <div class="sc-label">🟢 リプレイス / 月額プラン</div>
+        <div class="sc-value" id="sv_rm">—</div>
+        <div class="sc-sub">試算期間内 利益合計（円）</div>
+      </div>
+    </div>
+
+    <!-- バーチャート -->
+    <div class="chart-wrap">
+      <div class="chart-title">📊 利益比較チャート</div>
+      <div class="bar-group">
+        <div class="bar-label">🔵 新規獲得 / 割賦</div>
+        <div class="bar-track"><div class="bar-fill ni" id="bar_ni">—</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-label">🔵 新規獲得 / 月額プラン</div>
+        <div class="bar-track"><div class="bar-fill nm" id="bar_nm">—</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-label">🟢 リプレイス / 割賦</div>
+        <div class="bar-track"><div class="bar-fill ri" id="bar_ri">—</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-label">🟢 リプレイス / 月額プラン</div>
+        <div class="bar-track"><div class="bar-fill rm" id="bar_rm">—</div></div>
+      </div>
+    </div>
+
+    <!-- 詳細パネル 2×2 -->
+    <div class="panels-grid">
+
+      <div class="panel new">
+        <div class="panel-head">🔵 新規獲得 / 割賦プラン 詳細</div>
+        <table class="dtbl">
+          <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+          <tbody id="tbody_ni"></tbody>
+        </table>
+      </div>
+
+      <div class="panel new">
+        <div class="panel-head">🔵 新規獲得 / 月額プラン 詳細</div>
+        <table class="dtbl">
+          <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+          <tbody id="tbody_nm"></tbody>
+        </table>
+      </div>
+
+      <div class="panel rep">
+        <div class="panel-head">🟢 リプレイス / 割賦プラン 詳細</div>
+        <table class="dtbl">
+          <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+          <tbody id="tbody_ri"></tbody>
+        </table>
+      </div>
+
+      <div class="panel rep">
+        <div class="panel-head">🟢 リプレイス / 月額プラン 詳細</div>
+        <table class="dtbl">
+          <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+          <tbody id="tbody_rm"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  /* ── ヘルパー ── */
+  const g = id => parseFloat(document.getElementById(id).value) || 0;
+  const fmt = n => Math.round(n).toLocaleString('ja-JP');
+
+  function syncMonths() {
+    document.getElementById('months').value = g('years') * 12;
+  }
+
+  function toggleSection(head) {
+    head.classList.toggle('open');
+    head.querySelector('.arrow').classList.toggle('open');
+    head.nextElementSibling.classList.toggle('open');
+  }
+
+  /* ── 計算ロジック ── */
+  function calcNI() {
+    const mo = g('years') * 12;
+    const c1 = g('cr_y1') / 100, c5 = g('cr_y5') / 100;
+    const au = g('acq_unit');
+
+    const ss1 = g('ni_ss_y1') * c1;
+    const ss5 = g('ni_ss_y5') * c5;
+    const ss_tot = ss1 + ss5;
+    const stk_s = g('ni_stk_s') * mo;
+    const sales = ss_tot + stk_s;
+
+    const sc1 = g('ni_sc_y1') * c1;
+    const sc5 = g('ni_sc_y5') * c5;
+    const db1 = g('ni_db_y1');
+    const db5 = g('ni_db_y5');
+    const sc_tot = sc1 + sc5 + db1 + db5;
+    const stk_c = g('ni_stk_c') * mo;
+    const cost = sc_tot + stk_c;
+
+    const gross = sales - cost;
+    const a1 = au / g('ni_avg_y1');
+    const a5 = au / g('ni_avg_y5');
+    const acq = a1 + a5;
+    const profit = gross - acq;
+
+    return { ss1, ss5, ss_tot, stk_s, sales, sc1, sc5, db1, db5, sc_tot, stk_c, cost, gross, a1, a5, acq, profit };
+  }
+
+  function calcNM() {
+    const mo = g('years') * 12;
+    const au = g('acq_unit');
+    const sales = g('nm_sales') * mo;
+    const stk_c = g('nm_stk_c') * mo;
+    const init  = g('nm_init_c');
+    const cost  = stk_c + init;
+    const gross = sales - cost;
+    const acq   = au / g('nm_avg');
+    const profit = gross - acq;
+    return { sales, stk_c, init, cost, gross, acq, profit };
+  }
+
+  function calcRI() {
+    const mo = g('years') * 12;
+    const c5 = g('cr_y5') / 100;
+    const au = g('acq_unit');
+
+    const ss1 = g('ri_ss_1') * c5;
+    const ss2 = g('ri_ss_2') * c5;
+    const ss_tot = ss1 + ss2;
+    const stk_s = g('ri_stk_s') * mo;
+    const sales = ss_tot + stk_s;
+
+    const sc1 = g('ri_sc_1') * c5;
+    const sc2 = g('ri_sc_2') * c5;
+    const db1 = g('ri_db_1');
+    const db2 = g('ri_db_2');
+    const sc_tot = sc1 + sc2 + db1 + db2;
+    const stk_c = g('ri_stk_c') * mo;
+    const cost = sc_tot + stk_c;
+
+    const gross = sales - cost;
+    const a1 = au / g('ri_avg_1');
+    const a2 = au / g('ri_avg_2');
+    const acq = a1 + a2;
+    const profit = gross - acq;
+
+    return { ss1, ss2, ss_tot, stk_s, sales, sc1, sc2, db1, db2, sc_tot, stk_c, cost, gross, a1, a2, acq, profit };
+  }
+
+  function calcRM() {
+    const mo = g('years') * 12;
+    const au = g('acq_unit');
+    const sales = g('rm_sales') * mo;
+    const stk_c = g('rm_stk_c') * mo;
+    const init  = g('rm_init_c');
+    const cost  = stk_c + init;
+    const gross = sales - cost;
+    const acq   = au / g('rm_avg');
+    const profit = gross - acq;
+    return { sales, stk_c, init, cost, gross, acq, profit };
+  }
+
+  /* ── テーブル行生成 ── */
+  const tr = (label, val, cls = '', indent = false) => {
+    const neg = val < 0 ? 'negative' : '';
+    const ic  = indent ? ' indent' : '';
+    return `<tr class="${cls}"><td class="${ic}">${label}</td><td class="r ${neg}">${fmt(val)}</td></tr>`;
+  };
+  const sec = label =>
+    `<tr class="section-row"><td colspan="2">${label}</td></tr>`;
+
+  function buildNI(d) {
+    const c1 = g('cr_y1'), c5 = g('cr_y5'), mo = g('years') * 12;
+    return [
+      sec('■ 売上'),
+      tr(`ショット売上（割賦1年目 × ${c1}%）`, d.ss1, '', true),
+      tr(`ショット売上（割賦5年目 × ${c5}%）`, d.ss5, '', true),
+      tr('ショット売上合計', d.ss_tot, 'sub'),
+      tr(`ストック売上（${fmt(g('ni_stk_s'))}円 × ${mo}ヶ月）`, d.stk_s, '', true),
+      tr('売上合計', d.sales, 'total'),
+      sec('■ 原価（園社長・与信通過率を加味）'),
+      tr(`ショット原価（割賦1年目 × ${c1}%）`, d.sc1, '', true),
+      tr(`ショット原価（割賦5年目 × ${c5}%）`, d.sc5, '', true),
+      tr('残債（割賦1年目）', d.db1, '', true),
+      tr('残債（割賦5年目）', d.db5, '', true),
+      tr('ショット原価合計', d.sc_tot, 'sub'),
+      tr(`ストック原価（${fmt(g('ni_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
+      tr('原価合計', d.cost, 'total'),
+      tr('粗利（売上 − 原価）', d.gross, 'total'),
+      sec('■ 獲得コスト'),
+      tr(`割賦1年目（単価 ÷ ${g('ni_avg_y1')}）`, d.a1, '', true),
+      tr(`割賦5年目（単価 ÷ ${g('ni_avg_y5')}）`, d.a5, '', true),
+      tr('コスト合計', d.acq, 'total'),
+      tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
+    ].join('');
+  }
+
+  function buildNM(d) {
+    const mo = g('years') * 12;
+    return [
+      sec('■ 売上'),
+      tr(`月額売上（${fmt(g('nm_sales'))}円 × ${mo}ヶ月）`, d.sales),
+      sec('■ 原価'),
+      tr(`ストック原価（${fmt(g('nm_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
+      tr('初期制作費', d.init, '', true),
+      tr('原価合計', d.cost, 'total'),
+      tr('粗利（売上 − 原価）', d.gross, 'total'),
+      sec('■ 獲得コスト'),
+      tr(`獲得コスト（単価 ÷ ${g('nm_avg')}）`, d.acq),
+      tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
+    ].join('');
+  }
+
+  function buildRI(d) {
+    const c5 = g('cr_y5'), mo = g('years') * 12;
+    return [
+      sec('■ 売上'),
+      tr(`ショット売上（1件目 × ${c5}%）`, d.ss1, '', true),
+      tr(`ショット売上（2件目 × ${c5}%）`, d.ss2, '', true),
+      tr('ショット売上合計', d.ss_tot, 'sub'),
+      tr(`ストック売上（${fmt(g('ri_stk_s'))}円 × ${mo}ヶ月）`, d.stk_s, '', true),
+      tr('リプレイス売上合計', d.sales, 'total'),
+      sec('■ リプレイス原価（園社長・与信通過率を加味）'),
+      tr(`ショット原価（1件目 × ${c5}%）`, d.sc1, '', true),
+      tr(`ショット原価（2件目 × ${c5}%）`, d.sc2, '', true),
+      tr('残債（1件目）', d.db1, '', true),
+      tr('残債（2件目）', d.db2, '', true),
+      tr('ショット原価合計', d.sc_tot, 'sub'),
+      tr(`ストック原価（${fmt(g('ri_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
+      tr('リプレイス原価合計', d.cost, 'total'),
+      tr('粗利（売上 − 原価）', d.gross, 'total'),
+      sec('■ 獲得コスト'),
+      tr(`1件目（単価 ÷ ${g('ri_avg_1')}）`, d.a1, '', true),
+      tr(`2件目（単価 ÷ ${g('ri_avg_2')}）`, d.a2, '', true),
+      tr('コスト合計', d.acq, 'total'),
+      tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
+    ].join('');
+  }
+
+  function buildRM(d) {
+    const mo = g('years') * 12;
+    return [
+      sec('■ 売上'),
+      tr(`月額売上（${fmt(g('rm_sales'))}円 × ${mo}ヶ月）`, d.sales),
+      sec('■ 原価'),
+      tr(`ストック原価（${fmt(g('rm_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
+      tr('初期制作費', d.init, '', true),
+      tr('原価合計', d.cost, 'total'),
+      tr('粗利（売上 − 原価）', d.gross, 'total'),
+      sec('■ 獲得コスト'),
+      tr(`獲得コスト（単価 ÷ ${g('rm_avg')}）`, d.acq),
+      tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
+    ].join('');
+  }
+
+  /* ── メイン再計算 ── */
+  function recalculate() {
+    syncMonths();
+
+    const ni = calcNI();
+    const nm = calcNM();
+    const ri = calcRI();
+    const rm = calcRM();
+
+    // サマリー
+    const profits = { ni: ni.profit, nm: nm.profit, ri: ri.profit, rm: rm.profit };
+    const maxProfit = Math.max(...Object.values(profits));
+
+    ['ni', 'nm', 'ri', 'rm'].forEach(k => {
+      const val = profits[k];
+      const sv  = document.getElementById(`sv_${k}`);
+      const card = document.getElementById(`card_${k}`);
+      sv.textContent = fmt(val);
+      sv.classList.toggle('negative', val < 0);
+      card.classList.toggle('best-badge', val === maxProfit && maxProfit > 0);
+    });
+
+    // バーチャート
+    const maxBar = Math.max(1, ...Object.values(profits).map(Math.abs));
+    ['ni', 'nm', 'ri', 'rm'].forEach(k => {
+      const bar = document.getElementById(`bar_${k}`);
+      const pct = Math.max(0, profits[k]) / maxBar * 100;
+      bar.style.width = pct + '%';
+      bar.textContent = fmt(profits[k]);
+    });
+
+    // 詳細テーブル
+    document.getElementById('tbody_ni').innerHTML = buildNI(ni);
+    document.getElementById('tbody_nm').innerHTML = buildNM(nm);
+    document.getElementById('tbody_ri').innerHTML = buildRI(ri);
+    document.getElementById('tbody_rm').innerHTML = buildRM(rm);
+  }
+
+  // 初期計算
+  recalculate();
+</script>
+</body>
+</html>
