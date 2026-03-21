@@ -304,9 +304,10 @@
     .dtbl td {
       padding: 7px 12px;
       border-bottom: 1px solid #f3f4f6;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      word-break: break-all;   /* ラベル列：長いテキストを折り返す */
+    }
+    .dtbl td.r {
+      white-space: nowrap;     /* 数値列：折り返しなし */
     }
     .dtbl tr:hover td { background: #fafafa; }
 
@@ -402,7 +403,8 @@
       table.dtbl { font-size: 12px; }
       .dtbl tr.profit td { font-size: 14px; }
       .dtbl th { font-size: 11px; padding: 6px 8px; }
-      .dtbl td { padding: 6px 8px; }
+      .dtbl th:last-child { width: 110px; }  /* スマホは金額列を少し狭く */
+      .dtbl td { padding: 6px 8px; word-break: break-word; }
     }
 
     @media (max-width: 480px) {
