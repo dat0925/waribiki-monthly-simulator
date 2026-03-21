@@ -77,22 +77,23 @@
     .s-head:hover { filter: brightness(.95); }
     .s-head:active { filter: brightness(.9); }
     .s-head .arrow {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: rgba(0,0,0,.12);
-      border: 2px solid rgba(0,0,0,.18);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      flex-shrink: 0;
-      transition: transform .25s, background .2s;
+      font-size: 13px; opacity: .65;
+      transition: transform .45s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .s-head.open .arrow { transform: rotate(90deg); background: rgba(0,0,0,.2); }
-    .s-head:hover .arrow, .s-head:active .arrow { background: rgba(0,0,0,.22); }
+    .s-head.open .arrow { transform: rotate(90deg); opacity: 1; }
 
-    .s-body { padding: 10px 14px 14px; display: none; }
-    .s-body.open { display: block; }
+    .s-body {
+      overflow: hidden;
+      max-height: 0;
+      padding: 0 14px;
+      transition: max-height .5s cubic-bezier(0.4, 0, 0.2, 1),
+                  padding-top .45s cubic-bezier(0.4, 0, 0.2, 1),
+                  padding-bottom .45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .s-body.open {
+      max-height: 2000px;
+      padding: 10px 14px 14px;
+    }
 
     .s-sub {
       font-size: 12px;
@@ -178,8 +179,9 @@
 
     .sum-card .sc-label { font-size: 13px; color: var(--gray-text); margin-bottom: 8px; font-weight: 600; }
     .sum-card .sc-value {
-      font-size: 28px; font-weight: 800;
+      font-size: 34px; font-weight: 900;
       font-family: 'Courier New', monospace;
+      letter-spacing: -.02em;
     }
     .sum-card.ni .sc-value { color: var(--blue-mid); }
     .sum-card.nm .sc-value { color: #7c3aed; }
@@ -206,12 +208,34 @@
     .bar-group { margin-bottom: 12px; }
     .bar-label { font-size: 13px; color: #374151; margin-bottom: 4px; font-weight: 600; }
     .bar-track {
-      height: 22px;
-      background: #f3f4f6;
+      height: 26px;
       border-radius: 4px;
       overflow: hidden;
       position: relative;
+      background:
+        repeating-linear-gradient(
+          to right,
+          rgba(0,0,0,.08) 0px, rgba(0,0,0,.08) 1px,
+          transparent 1px, transparent 25%
+        ),
+        #f3f4f6;
     }
+    .chart-scale {
+      position: relative;
+      height: 20px;
+      margin-top: 2px;
+      border-top: 1px solid #e5e7eb;
+    }
+    .scale-tick {
+      position: absolute;
+      font-size: 11px;
+      color: #9ca3af;
+      top: 3px;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .scale-tick:first-child { transform: translateX(0); }
+    .scale-tick:last-child  { transform: translateX(-100%); }
     .bar-fill {
       height: 100%;
       border-radius: 4px;
@@ -494,21 +518,25 @@
         🔵 新規獲得 / 月額プラン <span class="arrow open">▶</span>
       </div>
       <div class="s-body open">
-        <div class="field">
-          <label>月額売上（月額・円）</label>
-          <input type="number" id="nm_sales" value="15000" oninput="recalculate()">
+        <div class="row2">
+          <div class="field">
+            <label>月額売上（月額・円）</label>
+            <input type="number" id="nm_sales" value="15000" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>ストック原価（月額・円）</label>
+            <input type="number" id="nm_stk_c" value="1908" oninput="recalculate()">
+          </div>
         </div>
-        <div class="field">
-          <label>ストック原価（月額・円）</label>
-          <input type="number" id="nm_stk_c" value="1908" oninput="recalculate()">
-        </div>
-        <div class="field">
-          <label>初期制作費（一括・円）</label>
-          <input type="number" id="nm_init_c" value="25000" oninput="recalculate()">
-        </div>
-        <div class="field">
-          <label>獲得コスト 平均値</label>
-          <input type="number" id="nm_avg" value="3.0" step="0.1" min="0.1" oninput="recalculate()">
+        <div class="row2">
+          <div class="field">
+            <label>初期制作費（一括・円）</label>
+            <input type="number" id="nm_init_c" value="25000" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>獲得コスト 平均値</label>
+            <input type="number" id="nm_avg" value="3.0" step="0.1" min="0.1" oninput="recalculate()">
+          </div>
         </div>
       </div>
     </div>
@@ -580,21 +608,25 @@
         🟢 リプレイス / 月額プラン <span class="arrow open">▶</span>
       </div>
       <div class="s-body open">
-        <div class="field">
-          <label>月額売上（月額・円）</label>
-          <input type="number" id="rm_sales" value="20000" oninput="recalculate()">
+        <div class="row2">
+          <div class="field">
+            <label>月額売上（月額・円）</label>
+            <input type="number" id="rm_sales" value="20000" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>ストック原価（月額・円）</label>
+            <input type="number" id="rm_stk_c" value="2961" oninput="recalculate()">
+          </div>
         </div>
-        <div class="field">
-          <label>ストック原価（月額・円）</label>
-          <input type="number" id="rm_stk_c" value="2961" oninput="recalculate()">
-        </div>
-        <div class="field">
-          <label>初期制作費（一括・円）</label>
-          <input type="number" id="rm_init_c" value="25000" oninput="recalculate()">
-        </div>
-        <div class="field">
-          <label>獲得コスト 平均値</label>
-          <input type="number" id="rm_avg" value="6.0" step="0.1" min="0.1" oninput="recalculate()">
+        <div class="row2">
+          <div class="field">
+            <label>初期制作費（一括・円）</label>
+            <input type="number" id="rm_init_c" value="25000" oninput="recalculate()">
+          </div>
+          <div class="field">
+            <label>獲得コスト 平均値</label>
+            <input type="number" id="rm_avg" value="6.0" step="0.1" min="0.1" oninput="recalculate()">
+          </div>
         </div>
       </div>
     </div>
@@ -647,6 +679,7 @@
         <div class="bar-label">🟢 リプレイス / 月額プラン</div>
         <div class="bar-track"><div class="bar-fill rm" id="bar_rm">—</div></div>
       </div>
+      <div class="chart-scale" id="chart_scale"></div>
     </div>
 
     <!-- 詳細パネル 2×2 -->
@@ -929,14 +962,27 @@
       card.classList.toggle('best-badge', val === maxProfit && maxProfit > 0);
     });
 
-    // バーチャート
-    const maxBar = Math.max(1, ...Object.values(profits).map(Math.abs));
+    // バーチャート（目盛り付き）
+    const rawMax = Math.max(1, ...Object.values(profits));
+    // 50万単位で切り上げてきれいな目盛りに
+    const unit = rawMax <= 2000000 ? 500000 : rawMax <= 5000000 ? 1000000 : 2000000;
+    const scaleMax = Math.ceil(rawMax / unit) * unit;
     ['ni', 'nm', 'ri', 'rm'].forEach(k => {
       const bar = document.getElementById(`bar_${k}`);
-      const pct = Math.max(0, profits[k]) / maxBar * 100;
+      const pct = Math.max(0, profits[k]) / scaleMax * 100;
       bar.style.width = pct + '%';
       bar.textContent = fmt(profits[k]);
     });
+    // 目盛りラベル生成（0 〜 scaleMax を4等分）
+    const ticks = 4;
+    let scaleHTML = '';
+    for (let i = 0; i <= ticks; i++) {
+      const pct = (i / ticks) * 100;
+      const val = (i / ticks) * scaleMax;
+      const label = val === 0 ? '0' : (val / 10000) + '万';
+      scaleHTML += `<span class="scale-tick" style="left:${pct}%">${label}</span>`;
+    }
+    document.getElementById('chart_scale').innerHTML = scaleHTML;
 
     // 詳細テーブル
     document.getElementById('tbody_ni').innerHTML = buildNI(ni);
