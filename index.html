@@ -70,9 +70,26 @@
       justify-content: space-between;
       user-select: none;
     }
-    .s-head:hover { filter: brightness(.97); }
-    .s-head .arrow { transition: transform .2s; font-size: 12px; }
-    .s-head.open .arrow { transform: rotate(90deg); }
+    .s-head {
+      border-bottom: 2px solid rgba(0,0,0,.1);
+      transition: filter .15s;
+    }
+    .s-head:hover { filter: brightness(.95); }
+    .s-head:active { filter: brightness(.9); }
+    .s-head .arrow {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.12);
+      border: 2px solid rgba(0,0,0,.18);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      transition: transform .25s, background .2s;
+    }
+    .s-head.open .arrow { transform: rotate(90deg); background: rgba(0,0,0,.2); }
+    .s-head:hover .arrow, .s-head:active .arrow { background: rgba(0,0,0,.22); }
 
     .s-body { padding: 10px 14px 14px; display: none; }
     .s-body.open { display: block; }
@@ -274,6 +291,45 @@
     }
     .dtbl .indent { padding-left: 22px !important; color: #4b5563; }
 
+    /* ── 与信通過率トグルスイッチ ── */
+    .credit-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .sw { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
+    .sw input { opacity: 0; width: 0; height: 0; }
+    .sw-track {
+      position: absolute; inset: 0;
+      background: #d1d5db;
+      border-radius: 13px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .sw-track::after {
+      content: '';
+      position: absolute;
+      left: 3px; top: 3px;
+      width: 20px; height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform .2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.3);
+    }
+    .sw input:checked + .sw-track { background: var(--blue-mid); }
+    .sw input:checked + .sw-track::after { transform: translateX(20px); }
+    .sw-label { font-size: 13px; font-weight: 600; color: #374151; }
+    .field input.cr-off {
+      background: #f3f4f6 !important;
+      color: #9ca3af !important;
+      cursor: not-allowed;
+    }
+
     /* ── RESPONSIVE: スマホ対応 ── */
     @media (max-width: 768px) {
       /* ヘッダー */
@@ -295,9 +351,6 @@
 
       /* メインも全幅 */
       main { overflow-y: visible; padding: 14px; gap: 14px; }
-
-      /* 入力欄の横並び → 縦積みに */
-      .row2 { flex-direction: column; gap: 0; }
 
       /* サマリーカード：2列 */
       .summary-row { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -349,7 +402,14 @@
           </div>
         </div>
         <div class="s-sub">与信通過率</div>
-        <div class="row2">
+        <div class="credit-toggle-row">
+          <label class="sw">
+            <input type="checkbox" id="credit_apply" checked onchange="applyCreditToggle()">
+            <span class="sw-track"></span>
+          </label>
+          <span class="sw-label" id="credit_label">与信通過率を加味する</span>
+        </div>
+        <div class="row2" id="credit_inputs">
           <div class="field">
             <label>割賦 1年目（%）</label>
             <input type="number" id="cr_y1" value="82" min="0" max="100" step="0.1" oninput="recalculate()">
@@ -637,6 +697,34 @@
     document.getElementById('months').value = g('years') * 12;
   }
 
+  function applyCreditToggle() {
+    const apply = document.getElementById('credit_apply').checked;
+    const label = document.getElementById('credit_label');
+    const y1    = document.getElementById('cr_y1');
+    const y5    = document.getElementById('cr_y5');
+
+    label.textContent = apply ? '与信通過率を加味する' : '与信通過率を加味しない（100%）';
+
+    if (apply) {
+      y1.value = y1.dataset.saved ?? y1.value;
+      y5.value = y5.dataset.saved ?? y5.value;
+      y1.readOnly = false;
+      y5.readOnly = false;
+      y1.classList.remove('cr-off');
+      y5.classList.remove('cr-off');
+    } else {
+      y1.dataset.saved = y1.value;
+      y5.dataset.saved = y5.value;
+      y1.value = 100;
+      y5.value = 100;
+      y1.readOnly = true;
+      y5.readOnly = true;
+      y1.classList.add('cr-off');
+      y5.classList.add('cr-off');
+    }
+    recalculate();
+  }
+
   function toggleSection(head) {
     head.classList.toggle('open');
     head.querySelector('.arrow').classList.toggle('open');
@@ -744,7 +832,7 @@
       tr('ショット売上合計', d.ss_tot, 'sub'),
       tr(`ストック売上（${fmt(g('ni_stk_s'))}円 × ${mo}ヶ月）`, d.stk_s, '', true),
       tr('売上合計', d.sales, 'total'),
-      sec('■ 原価（園社長・与信通過率を加味）'),
+      sec('■ 原価（与信通過率を加味）'),
       tr(`ショット原価（割賦1年目 × ${c1}%）`, d.sc1, '', true),
       tr(`ショット原価（割賦5年目 × ${c5}%）`, d.sc5, '', true),
       tr('残債（割賦1年目）', d.db1, '', true),
@@ -786,7 +874,7 @@
       tr('ショット売上合計', d.ss_tot, 'sub'),
       tr(`ストック売上（${fmt(g('ri_stk_s'))}円 × ${mo}ヶ月）`, d.stk_s, '', true),
       tr('リプレイス売上合計', d.sales, 'total'),
-      sec('■ リプレイス原価（園社長・与信通過率を加味）'),
+      sec('■ リプレイス原価（与信通過率を加味）'),
       tr(`ショット原価（1件目 × ${c5}%）`, d.sc1, '', true),
       tr(`ショット原価（2件目 × ${c5}%）`, d.sc2, '', true),
       tr('残債（1件目）', d.db1, '', true),
