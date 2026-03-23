@@ -726,6 +726,98 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ── 生産性・収益性 比較セクション ── */
+    .compare-section {
+      background: #fff;
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+
+    .compare-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 14px;
+      letter-spacing: .02em;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .compare-card {
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      border: 1px solid;
+    }
+
+    .compare-card.new {
+      background: var(--blue-light);
+      border-color: #bfdbfe;
+    }
+
+    .compare-card.rep {
+      background: var(--green-light);
+      border-color: #bbf7d0;
+    }
+
+    .compare-head {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .compare-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(0,0,0,.07);
+    }
+
+    .compare-row:last-of-type {
+      border-bottom: none;
+    }
+
+    .compare-label {
+      font-size: 13px;
+      color: var(--gray-text);
+      font-weight: 600;
+    }
+
+    .compare-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #dc2626;
+      letter-spacing: -.01em;
+    }
+
+    .compare-value.neutral {
+      color: #6b7280;
+      font-size: 16px;
+    }
+
+    .compare-note {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 640px) {
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .compare-value {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 
@@ -1016,6 +1108,37 @@
           <div class="bar-track"><div class="bar-fill rm" id="bar_rm">—</div></div>
         </div>
         <div class="chart-scale" id="chart_scale"></div>
+      </div>
+
+      <!-- 生産性・収益性 比較 -->
+      <div class="compare-section">
+        <div class="compare-title">📈 月額プランの優位性（割賦 → 月額 シフト効果）</div>
+        <div class="compare-grid">
+          <div class="compare-card new">
+            <div class="compare-head">🔵 新規獲得</div>
+            <div class="compare-row">
+              <span class="compare-label">生産性</span>
+              <span class="compare-value" id="cmp_ni_prod">—</span>
+            </div>
+            <div class="compare-row">
+              <span class="compare-label">収益性</span>
+              <span class="compare-value" id="cmp_ni_rev">—</span>
+            </div>
+            <div class="compare-note" id="cmp_ni_note"></div>
+          </div>
+          <div class="compare-card rep">
+            <div class="compare-head">🟢 リプレイス</div>
+            <div class="compare-row">
+              <span class="compare-label">生産性</span>
+              <span class="compare-value" id="cmp_ri_prod">—</span>
+            </div>
+            <div class="compare-row">
+              <span class="compare-label">収益性</span>
+              <span class="compare-value" id="cmp_ri_rev">—</span>
+            </div>
+            <div class="compare-note" id="cmp_ri_note"></div>
+          </div>
+        </div>
       </div>
 
       <!-- 詳細パネル 2×2 -->
@@ -1490,6 +1613,81 @@
       ].join('');
     }
 
+    /* ── 生産性・収益性 比較 ── */
+    function updateComparison(ni, nm, ri, rm) {
+      const pct = v => Math.round(v * 100);
+      const setCard = (prodId, revId, noteId, prodRatio, adjProfit, baseProfit) => {
+        const prodEl  = document.getElementById(prodId);
+        const revEl   = document.getElementById(revId);
+        const noteEl  = document.getElementById(noteId);
+
+        // 生産性
+        prodEl.textContent = pct(prodRatio) + '%UP';
+        prodEl.className   = 'compare-value' + (prodRatio < 1 ? ' neutral' : '');
+
+        // 収益性
+        if (baseProfit > 0) {
+          const revRatio = adjProfit / baseProfit;
+          revEl.textContent = pct(revRatio) + '%UP';
+          revEl.className   = 'compare-value' + (revRatio < 1 ? ' neutral' : '');
+          noteEl.textContent =
+            `月額利益 ${fmt(Math.round(nm.profit || rm.profit))} × 生産性${prodRatio.toFixed(1)}倍 ` +
+            `= ${fmt(Math.round(adjProfit))}円 ÷ 割賦利益 ${fmt(Math.round(baseProfit))}円`;
+        } else {
+          revEl.textContent  = '—';
+          revEl.className    = 'compare-value neutral';
+          noteEl.textContent = '割賦利益が0以下のため収益性を算出できません';
+        }
+      };
+
+      // 新規獲得
+      const niAvg   = g('ni_avg_y1');
+      const nmAvg   = g('nm_avg');
+      const niProd  = niAvg > 0 ? nmAvg / niAvg : 0;
+      const niAdj   = nm.profit * niProd;
+      // noteの内訳は新規用に上書き
+      const niProdEl = document.getElementById('cmp_ni_prod');
+      const niRevEl  = document.getElementById('cmp_ni_rev');
+      const niNoteEl = document.getElementById('cmp_ni_note');
+      niProdEl.textContent = pct(niProd) + '%UP';
+      niProdEl.className   = 'compare-value' + (niProd < 1 ? ' neutral' : '');
+      if (ni.profit > 0) {
+        const niRevRatio = niAdj / ni.profit;
+        niRevEl.textContent = pct(niRevRatio) + '%UP';
+        niRevEl.className   = 'compare-value' + (niRevRatio < 1 ? ' neutral' : '');
+        niNoteEl.textContent =
+          `割賦1年目avg ${niAvg} → 月額avg ${nmAvg}（生産性${niProd.toFixed(1)}倍）` +
+          `\n月額利益 ${fmt(Math.round(nm.profit))} × ${niProd.toFixed(1)}倍 = ${fmt(Math.round(niAdj))}円 ÷ 割賦利益 ${fmt(Math.round(ni.profit))}円`;
+      } else {
+        niRevEl.textContent  = '—';
+        niRevEl.className    = 'compare-value neutral';
+        niNoteEl.textContent = '割賦利益が0以下のため収益性を算出できません';
+      }
+
+      // リプレイス
+      const riAvg   = g('ri_avg_1');
+      const rmAvg   = g('rm_avg');
+      const riProd  = riAvg > 0 ? rmAvg / riAvg : 0;
+      const riAdj   = rm.profit * riProd;
+      const riProdEl = document.getElementById('cmp_ri_prod');
+      const riRevEl  = document.getElementById('cmp_ri_rev');
+      const riNoteEl = document.getElementById('cmp_ri_note');
+      riProdEl.textContent = pct(riProd) + '%UP';
+      riProdEl.className   = 'compare-value' + (riProd < 1 ? ' neutral' : '');
+      if (ri.profit > 0) {
+        const riRevRatio = riAdj / ri.profit;
+        riRevEl.textContent = pct(riRevRatio) + '%UP';
+        riRevEl.className   = 'compare-value' + (riRevRatio < 1 ? ' neutral' : '');
+        riNoteEl.textContent =
+          `割賦1件目avg ${riAvg} → 月額avg ${rmAvg}（生産性${riProd.toFixed(1)}倍）` +
+          `\n月額利益 ${fmt(Math.round(rm.profit))} × ${riProd.toFixed(1)}倍 = ${fmt(Math.round(riAdj))}円 ÷ 割賦利益 ${fmt(Math.round(ri.profit))}円`;
+      } else {
+        riRevEl.textContent  = '—';
+        riRevEl.className    = 'compare-value neutral';
+        riNoteEl.textContent = '割賦利益が0以下のため収益性を算出できません';
+      }
+    }
+
     /* ── メイン再計算 ── */
     function recalculate() {
       syncMonths();
@@ -1539,6 +1737,9 @@
       document.getElementById('tbody_nm').innerHTML = buildNM(nm);
       document.getElementById('tbody_ri').innerHTML = buildRI(ri);
       document.getElementById('tbody_rm').innerHTML = buildRM(rm);
+
+      // 生産性・収益性 比較
+      updateComparison(ni, nm, ri, rm);
     }
 
     /* ── 初期化 ── */
