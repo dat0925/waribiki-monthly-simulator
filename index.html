@@ -796,8 +796,8 @@
       font-size: 11px;
       color: #9ca3af;
       flex: 1;
-      text-align: right;
-      padding-right: 14px;
+      text-align: left;
+      padding-left: 10px;
       line-height: 1.4;
     }
 
@@ -1631,20 +1631,29 @@
     /* ── 生産性・収益性 比較 ── */
     function updateComparison(ni, nm, ri, rm) {
       const pct = v => Math.round(v * 100);
+      // 比率に応じた表示：101%以上→"X%UP"、99〜100%→"同等"、99%未満→"X%"
+      const fmtPct = ratio => {
+        const p = Math.round(ratio * 100);
+        if (ratio >= 1.005) return p + '%UP';
+        if (ratio >= 0.995) return '同等';
+        return p + '%';
+      };
+      const fmtPctCls = ratio =>
+        'compare-value' + (ratio >= 1.005 ? '' : ' neutral');
       const setCard = (prodId, revId, noteId, prodRatio, adjProfit, baseProfit) => {
         const prodEl  = document.getElementById(prodId);
         const revEl   = document.getElementById(revId);
         const noteEl  = document.getElementById(noteId);
 
         // 生産性
-        prodEl.textContent = pct(prodRatio) + '%UP';
-        prodEl.className   = 'compare-value' + (prodRatio < 1 ? ' neutral' : '');
+        prodEl.textContent = fmtPct(prodRatio);
+        prodEl.className   = fmtPctCls(prodRatio);
 
         // 収益性
         if (baseProfit > 0) {
           const revRatio = adjProfit / baseProfit;
-          revEl.textContent = pct(revRatio) + '%UP';
-          revEl.className   = 'compare-value' + (revRatio < 1 ? ' neutral' : '');
+          revEl.textContent = fmtPct(revRatio);
+          revEl.className   = fmtPctCls(revRatio);
           noteEl.textContent =
             `月額利益 ${fmt(Math.round(nm.profit || rm.profit))} × 生産性${prodRatio.toFixed(1)}倍 ` +
             `= ${fmt(Math.round(adjProfit))}円 ÷ 割賦利益 ${fmt(Math.round(baseProfit))}円`;
@@ -1664,14 +1673,14 @@
       const niProdEl = document.getElementById('cmp_ni_prod');
       const niRevEl  = document.getElementById('cmp_ni_rev');
       const niNoteEl = document.getElementById('cmp_ni_note');
-      niProdEl.textContent = pct(niProd) + '%UP';
-      niProdEl.className   = 'compare-value' + (niProd < 1 ? ' neutral' : '');
+      niProdEl.textContent = fmtPct(niProd);
+      niProdEl.className   = fmtPctCls(niProd);
       document.getElementById('cmp_ni_prod_desc').textContent =
         `割賦1年目avg ${niAvg} → 月額avg ${nmAvg}（生産性${niProd.toFixed(1)}倍）`;
       if (ni.profit > 0) {
         const niRevRatio = niAdj / ni.profit;
-        niRevEl.textContent = pct(niRevRatio) + '%UP';
-        niRevEl.className   = 'compare-value' + (niRevRatio < 1 ? ' neutral' : '');
+        niRevEl.textContent = fmtPct(niRevRatio);
+        niRevEl.className   = fmtPctCls(niRevRatio);
         document.getElementById('cmp_ni_rev_desc').textContent =
           `月額利益 ${fmt(Math.round(nm.profit))} × ${niProd.toFixed(1)}倍 = ${fmt(Math.round(niAdj))}円 ÷ 割賦利益 ${fmt(Math.round(ni.profit))}円`;
         niNoteEl.textContent = '';
@@ -1690,14 +1699,14 @@
       const riProdEl = document.getElementById('cmp_ri_prod');
       const riRevEl  = document.getElementById('cmp_ri_rev');
       const riNoteEl = document.getElementById('cmp_ri_note');
-      riProdEl.textContent = pct(riProd) + '%UP';
-      riProdEl.className   = 'compare-value' + (riProd < 1 ? ' neutral' : '');
+      riProdEl.textContent = fmtPct(riProd);
+      riProdEl.className   = fmtPctCls(riProd);
       document.getElementById('cmp_ri_prod_desc').textContent =
         `割賦1件目avg ${riAvg} → 月額avg ${rmAvg}（生産性${riProd.toFixed(1)}倍）`;
       if (ri.profit > 0) {
         const riRevRatio = riAdj / ri.profit;
-        riRevEl.textContent = pct(riRevRatio) + '%UP';
-        riRevEl.className   = 'compare-value' + (riRevRatio < 1 ? ' neutral' : '');
+        riRevEl.textContent = fmtPct(riRevRatio);
+        riRevEl.className   = fmtPctCls(riRevRatio);
         document.getElementById('cmp_ri_rev_desc').textContent =
           `月額利益 ${fmt(Math.round(rm.profit))} × ${riProd.toFixed(1)}倍 = ${fmt(Math.round(riAdj))}円 ÷ 割賦利益 ${fmt(Math.round(ri.profit))}円`;
         riNoteEl.textContent = '';
