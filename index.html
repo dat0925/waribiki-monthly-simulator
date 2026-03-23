@@ -5,21 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>収益比較シミュレーター｜割賦 vs 月額プラン</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --blue:       #1d4ed8;
+      --blue: #1d4ed8;
       --blue-light: #eff6ff;
-      --blue-mid:   #2563eb;
-      --green:      #15803d;
+      --blue-mid: #2563eb;
+      --green: #15803d;
       --green-light:#f0fdf4;
-      --green-mid:  #16a34a;
-      --yellow:     #fef08a;
+      --green-mid: #16a34a;
+      --yellow: #fef08a;
       --yellow-dark:#ca8a04;
-      --gray-bg:    #f5f7fa;
+      --gray-bg: #f5f7fa;
       --gray-border:#e5e7eb;
-      --gray-text:  #6b7280;
-      --radius:     8px;
+      --gray-text: #6b7280;
+      --radius: 8px;
     }
 
     body {
@@ -42,11 +46,52 @@
       z-index: 100;
       box-shadow: 0 2px 8px rgba(0,0,0,.25);
     }
-    header h1 { font-size: 20px; font-weight: 700; letter-spacing: .03em; }
-    header .hint { font-size: 13px; opacity: .75; }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+
+    header .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    header .hint {
+      font-size: 13px;
+      opacity: .75;
+    }
+
+    .btn-reset {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn-reset:hover {
+      background: rgba(255,255,255,0.28);
+    }
+
+    .btn-reset:active {
+      background: rgba(255,255,255,0.38);
+    }
 
     /* ── LAYOUT ── */
-    .container { display: flex; height: calc(100vh - 52px); overflow: hidden; }
+    .container {
+      display: flex;
+      height: calc(100vh - 52px);
+      overflow: hidden;
+    }
 
     /* ── SIDEBAR ── */
     aside {
@@ -57,7 +102,9 @@
       overflow-y: auto;
     }
 
-    .s-section { border-bottom: 1px solid var(--gray-border); }
+    .s-section {
+      border-bottom: 1px solid var(--gray-border);
+    }
 
     .s-head {
       padding: 12px 14px;
@@ -70,26 +117,38 @@
       justify-content: space-between;
       user-select: none;
     }
+
     .s-head {
       border-bottom: 2px solid rgba(0,0,0,.1);
       transition: filter .15s;
     }
-    .s-head:hover { filter: brightness(.95); }
-    .s-head:active { filter: brightness(.9); }
+
+    .s-head:hover {
+      filter: brightness(.95);
+    }
+
+    .s-head:active {
+      filter: brightness(.9);
+    }
+
     .s-head .arrow {
-      font-size: 13px; opacity: .65;
+      font-size: 13px;
+      opacity: .65;
       transition: transform .45s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .s-head.open .arrow { transform: rotate(90deg); opacity: 1; }
+
+    .s-head.open .arrow {
+      transform: rotate(90deg);
+      opacity: 1;
+    }
 
     .s-body {
       overflow: hidden;
       max-height: 0;
       padding: 0 14px;
-      transition: max-height .5s cubic-bezier(0.4, 0, 0.2, 1),
-                  padding-top .45s cubic-bezier(0.4, 0, 0.2, 1),
-                  padding-bottom .45s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: max-height .5s cubic-bezier(0.4, 0, 0.2, 1), padding-top .45s cubic-bezier(0.4, 0, 0.2, 1), padding-bottom .45s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     .s-body.open {
       max-height: 2000px;
       padding: 10px 14px 14px;
@@ -103,18 +162,31 @@
       letter-spacing: .05em;
       margin: 12px 0 6px;
     }
-    .s-sub:first-child { margin-top: 0; }
 
-    .row2 { display: flex; gap: 8px; }
-    .row2 .field { flex: 1; }
+    .s-sub:first-child {
+      margin-top: 0;
+    }
 
-    .field { margin-bottom: 7px; }
+    .row2 {
+      display: flex;
+      gap: 8px;
+    }
+
+    .row2 .field {
+      flex: 1;
+    }
+
+    .field {
+      margin-bottom: 7px;
+    }
+
     .field label {
       display: block;
       font-size: 12px;
       color: var(--gray-text);
       margin-bottom: 4px;
     }
+
     .field input {
       width: 100%;
       padding: 7px 10px;
@@ -124,22 +196,38 @@
       text-align: right;
       font-family: 'Courier New', monospace;
     }
+
     .field input:focus {
       outline: none;
       border-color: var(--blue-mid);
       box-shadow: 0 0 0 2px rgba(37,99,235,.15);
     }
-    .field input[readonly] { background: #f9fafb; color: #9ca3af; }
+
+    .field input[readonly] {
+      background: #f9fafb;
+      color: #9ca3af;
+    }
 
     /* color themes for sidebar sections */
-    .s-head.theme-common { background: #f1f5f9; color: #334155; }
-    .s-head.theme-new    { background: var(--blue-light); color: var(--blue); }
-    .s-head.theme-rep    { background: var(--green-light); color: var(--green); }
+    .s-head.theme-common {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .s-head.theme-new {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .s-head.theme-rep {
+      background: var(--green-light);
+      color: var(--green);
+    }
 
     /* ── MAIN ── */
     main {
       flex: 1;
-      min-width: 0;          /* flex子要素のオーバーフロー防止 */
+      min-width: 0;
       overflow-y: auto;
       overflow-x: hidden;
       padding: 18px;
@@ -155,6 +243,7 @@
       gap: 12px;
       min-width: 0;
     }
+
     .sum-card {
       background: #fff;
       border-radius: var(--radius);
@@ -164,10 +253,12 @@
       border-top: 4px solid transparent;
       position: relative;
     }
+
     .sum-card.best-badge::after {
       content: '★ BEST';
       position: absolute;
-      top: 6px; right: 8px;
+      top: 6px;
+      right: 8px;
       font-size: 9px;
       font-weight: 700;
       color: var(--yellow-dark);
@@ -175,23 +266,62 @@
       padding: 1px 6px;
       border-radius: 10px;
     }
-    .sum-card.ni { border-color: var(--blue-mid); }
-    .sum-card.nm { border-color: #7c3aed; }
-    .sum-card.ri { border-color: var(--green-mid); }
-    .sum-card.rm { border-color: #d97706; }
 
-    .sum-card .sc-label { font-size: 13px; color: var(--gray-text); margin-bottom: 8px; font-weight: 600; }
+    .sum-card.ni {
+      border-color: var(--blue-mid);
+    }
+
+    .sum-card.nm {
+      border-color: #7c3aed;
+    }
+
+    .sum-card.ri {
+      border-color: var(--green-mid);
+    }
+
+    .sum-card.rm {
+      border-color: #d97706;
+    }
+
+    .sum-card .sc-label {
+      font-size: 13px;
+      color: var(--gray-text);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
     .sum-card .sc-value {
-      font-size: 34px; font-weight: 900;
+      font-size: 34px;
+      font-weight: 900;
       font-family: 'Courier New', monospace;
       letter-spacing: -.02em;
     }
-    .sum-card.ni .sc-value { color: var(--blue-mid); }
-    .sum-card.nm .sc-value { color: #7c3aed; }
-    .sum-card.ri .sc-value { color: var(--green-mid); }
-    .sum-card.rm .sc-value { color: #d97706; }
-    .sc-sub { font-size: 12px; color: #9ca3af; margin-top: 6px; }
-    .negative { color: #dc2626 !important; }
+
+    .sum-card.ni .sc-value {
+      color: var(--blue-mid);
+    }
+
+    .sum-card.nm .sc-value {
+      color: #7c3aed;
+    }
+
+    .sum-card.ri .sc-value {
+      color: var(--green-mid);
+    }
+
+    .sum-card.rm .sc-value {
+      color: #d97706;
+    }
+
+    .sc-sub {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    .negative {
+      color: #dc2626 !important;
+    }
 
     /* ── CHART ── */
     .chart-wrap {
@@ -200,6 +330,7 @@
       padding: 16px 20px;
       box-shadow: 0 1px 4px rgba(0,0,0,.08);
     }
+
     .chart-title {
       font-size: 14px;
       font-weight: 700;
@@ -208,27 +339,39 @@
       text-transform: uppercase;
       letter-spacing: .04em;
     }
-    .bar-group { margin-bottom: 12px; }
-    .bar-label { font-size: 13px; color: #374151; margin-bottom: 4px; font-weight: 600; }
+
+    .bar-group {
+      margin-bottom: 12px;
+    }
+
+    .bar-label {
+      font-size: 13px;
+      color: #374151;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
     .bar-track {
       height: 26px;
       border-radius: 4px;
       overflow: hidden;
       position: relative;
-      background:
-        repeating-linear-gradient(
-          to right,
-          rgba(0,0,0,.08) 0px, rgba(0,0,0,.08) 1px,
-          transparent 1px, transparent 25%
-        ),
-        #f3f4f6;
+      background: repeating-linear-gradient(
+        to right,
+        rgba(0,0,0,.08) 0px,
+        rgba(0,0,0,.08) 1px,
+        transparent 1px,
+        transparent 25%
+      ), #f3f4f6;
     }
+
     .chart-scale {
       position: relative;
       height: 20px;
       margin-top: 2px;
       border-top: 1px solid #e5e7eb;
     }
+
     .scale-tick {
       position: absolute;
       font-size: 11px;
@@ -237,8 +380,15 @@
       transform: translateX(-50%);
       white-space: nowrap;
     }
-    .scale-tick:first-child { transform: translateX(0); }
-    .scale-tick:last-child  { transform: translateX(-100%); }
+
+    .scale-tick:first-child {
+      transform: translateX(0);
+    }
+
+    .scale-tick:last-child {
+      transform: translateX(-100%);
+    }
+
     .bar-fill {
       height: 100%;
       border-radius: 4px;
@@ -252,10 +402,22 @@
       white-space: nowrap;
       min-width: 60px;
     }
-    .bar-fill.ni { background: var(--blue-mid); }
-    .bar-fill.nm { background: #7c3aed; }
-    .bar-fill.ri { background: var(--green-mid); }
-    .bar-fill.rm { background: #d97706; }
+
+    .bar-fill.ni {
+      background: var(--blue-mid);
+    }
+
+    .bar-fill.nm {
+      background: #7c3aed;
+    }
+
+    .bar-fill.ri {
+      background: var(--green-mid);
+    }
+
+    .bar-fill.rm {
+      background: #d97706;
+    }
 
     /* ── DETAIL PANELS ── */
     .panels-grid {
@@ -269,47 +431,82 @@
       background: #fff;
       border-radius: var(--radius);
       overflow: hidden;
-      min-width: 0;          /* グリッドアイテムのオーバーフロー防止 */
+      min-width: 0;
       box-shadow: 0 1px 4px rgba(0,0,0,.08);
     }
-    .panel.new { border-top: 4px solid var(--blue-mid); }
-    .panel.rep { border-top: 4px solid var(--green-mid); }
+
+    .panel.new {
+      border-top: 4px solid var(--blue-mid);
+    }
+
+    .panel.rep {
+      border-top: 4px solid var(--green-mid);
+    }
 
     .panel-head {
       padding: 12px 16px;
       font-size: 15px;
       font-weight: 700;
     }
-    .panel.new .panel-head { background: var(--blue-light); color: var(--blue); }
-    .panel.rep .panel-head { background: var(--green-light); color: var(--green); }
+
+    .panel.new .panel-head {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .panel.rep .panel-head {
+      background: var(--green-light);
+      color: var(--green);
+    }
 
     table.dtbl {
       width: 100%;
-      table-layout: fixed;   /* テーブルをコンテナ幅に収める */
+      table-layout: fixed;
       border-collapse: collapse;
       font-size: 14px;
     }
+
     .dtbl th {
       padding: 8px 12px;
       text-align: left;
       font-size: 13px;
       color: #fff;
     }
-    .dtbl th:first-child { width: auto; }
-    .dtbl th:last-child  { width: 150px; }   /* 金額列は固定幅 */
-    .panel.new .dtbl th { background: var(--blue); }
-    .panel.rep .dtbl th { background: var(--green); }
-    .dtbl th.r, .dtbl td.r { text-align: right; font-family: 'Courier New', monospace; }
+
+    .dtbl th:first-child {
+      width: auto;
+    }
+
+    .dtbl th:last-child {
+      width: 150px;
+    }
+
+    .panel.new .dtbl th {
+      background: var(--blue);
+    }
+
+    .panel.rep .dtbl th {
+      background: var(--green);
+    }
+
+    .dtbl th.r, .dtbl td.r {
+      text-align: right;
+      font-family: 'Courier New', monospace;
+    }
 
     .dtbl td {
       padding: 7px 12px;
       border-bottom: 1px solid #f3f4f6;
-      word-break: break-all;   /* ラベル列：長いテキストを折り返す */
+      word-break: break-all;
     }
+
     .dtbl td.r {
-      white-space: nowrap;     /* 数値列：折り返しなし */
+      white-space: nowrap;
     }
-    .dtbl tr:hover td { background: #fafafa; }
+
+    .dtbl tr:hover td {
+      background: #fafafa;
+    }
 
     .dtbl tr.section-row td {
       background: #f8fafc;
@@ -320,15 +517,28 @@
       letter-spacing: .04em;
       padding: 6px 12px;
     }
-    .dtbl tr.sub td { background: #f3f4f6; font-weight: 600; }
-    .dtbl tr.total td { background: #fef9c3; font-weight: 700; }
+
+    .dtbl tr.sub td {
+      background: #f3f4f6;
+      font-weight: 600;
+    }
+
+    .dtbl tr.total td {
+      background: #fef9c3;
+      font-weight: 700;
+    }
+
     .dtbl tr.profit td {
       background: var(--yellow);
       font-weight: 800;
       font-size: 17px;
       color: #78350f;
     }
-    .dtbl .indent { padding-left: 22px !important; color: #4b5563; }
+
+    .dtbl .indent {
+      padding-left: 22px !important;
+      color: #4b5563;
+    }
 
     /* ── 与信通過率トグルスイッチ ── */
     .credit-toggle-row {
@@ -341,28 +551,56 @@
       border-radius: 8px;
       border: 1px solid #e2e8f0;
     }
-    .sw { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
-    .sw input { opacity: 0; width: 0; height: 0; }
+
+    .sw {
+      position: relative;
+      width: 46px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .sw input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
     .sw-track {
-      position: absolute; inset: 0;
+      position: absolute;
+      inset: 0;
       background: #d1d5db;
       border-radius: 13px;
       cursor: pointer;
       transition: background .2s;
     }
+
     .sw-track::after {
       content: '';
       position: absolute;
-      left: 3px; top: 3px;
-      width: 20px; height: 20px;
+      left: 3px;
+      top: 3px;
+      width: 20px;
+      height: 20px;
       background: #fff;
       border-radius: 50%;
       transition: transform .2s;
       box-shadow: 0 1px 4px rgba(0,0,0,.3);
     }
-    .sw input:checked + .sw-track { background: var(--blue-mid); }
-    .sw input:checked + .sw-track::after { transform: translateX(20px); }
-    .sw-label { font-size: 13px; font-weight: 600; color: #374151; }
+
+    .sw input:checked + .sw-track {
+      background: var(--blue-mid);
+    }
+
+    .sw input:checked + .sw-track::after {
+      transform: translateX(20px);
+    }
+
+    .sw-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+    }
+
     .field input.cr-off {
       background: #f3f4f6 !important;
       color: #9ca3af !important;
@@ -371,16 +609,28 @@
 
     /* ── RESPONSIVE: スマホ対応 ── */
     @media (max-width: 768px) {
-      /* ヘッダー */
-      header { padding: 12px 16px; }
-      header h1 { font-size: 15px; }
-      header .hint { display: none; }
+      header {
+        padding: 12px 16px;
+      }
 
-      /* レイアウト：縦積みに切り替え */
-      .container { flex-direction: column; height: auto; overflow: visible; }
-      body { overflow-y: auto; }
+      header h1 {
+        font-size: 15px;
+      }
 
-      /* サイドバーを全幅に */
+      header .hint {
+        display: none;
+      }
+
+      .container {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+      }
+
+      body {
+        overflow-y: auto;
+      }
+
       aside {
         width: 100%;
         border-right: none;
@@ -388,627 +638,752 @@
         overflow-y: visible;
       }
 
-      /* メインも全幅 */
-      main { overflow-y: visible; padding: 14px; gap: 14px; }
+      main {
+        overflow-y: visible;
+        padding: 14px;
+        gap: 14px;
+      }
 
-      /* サマリーカード：2列 */
-      .summary-row { grid-template-columns: 1fr 1fr; gap: 10px; }
-      .sum-card .sc-value { font-size: 20px; }
-      .sum-card { padding: 12px; }
+      .summary-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
 
-      /* 詳細パネル：1列 */
-      .panels-grid { grid-template-columns: 1fr; }
+      .sum-card .sc-value {
+        font-size: 20px;
+      }
 
-      /* テーブル文字サイズ縮小（横幅節約） */
-      table.dtbl { font-size: 12px; }
-      .dtbl tr.profit td { font-size: 14px; }
-      .dtbl th { font-size: 11px; padding: 6px 8px; }
-      .dtbl th:last-child { width: 110px; }  /* スマホは金額列を少し狭く */
-      .dtbl td { padding: 6px 8px; word-break: break-word; }
+      .sum-card {
+        padding: 12px;
+      }
+
+      .panels-grid {
+        grid-template-columns: 1fr;
+      }
+
+      table.dtbl {
+        font-size: 12px;
+      }
+
+      .dtbl tr.profit td {
+        font-size: 14px;
+      }
+
+      .dtbl th {
+        font-size: 11px;
+        padding: 6px 8px;
+      }
+
+      .dtbl th:last-child {
+        width: 110px;
+      }
+
+      .dtbl td {
+        padding: 6px 8px;
+        word-break: break-word;
+      }
+
+      .btn-reset {
+        font-size: 12px;
+        padding: 5px 10px;
+      }
     }
 
     @media (max-width: 480px) {
-      .summary-row { grid-template-columns: 1fr; }
+      .summary-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
-
-<header>
-  <h1>💴 割賦 vs 月額プラン｜収益比較シミュレーター</h1>
-  <span class="hint">数値を変更すると自動で再計算されます</span>
-</header>
-
-<div class="container">
-
-  <!-- ===== SIDEBAR ===== -->
-  <aside>
-
-    <!-- 共通設定 -->
-    <div class="s-section">
-      <div class="s-head theme-common open" onclick="toggleSection(this)">
-        📋 共通・前提条件 <span class="arrow open">▶</span>
-      </div>
-      <div class="s-body open">
-        <div class="s-sub">試算期間</div>
-        <div class="row2">
-          <div class="field">
-            <label>年数</label>
-            <input type="number" id="years" value="10" min="1" max="30" oninput="syncMonths();recalculate()">
-          </div>
-          <div class="field">
-            <label>月数（自動）</label>
-            <input type="number" id="months" value="120" readonly>
-          </div>
-        </div>
-        <div class="s-sub">与信通過率</div>
-        <div class="credit-toggle-row">
-          <label class="sw">
-            <input type="checkbox" id="credit_apply" checked onchange="applyCreditToggle()">
-            <span class="sw-track"></span>
-          </label>
-          <span class="sw-label" id="credit_label">与信通過率を加味する</span>
-        </div>
-        <div class="row2" id="credit_inputs">
-          <div class="field">
-            <label>割賦 1年目（%）</label>
-            <input type="number" id="cr_y1" value="82" min="0" max="100" step="0.1" oninput="recalculate()">
-          </div>
-          <div class="field">
-            <label>割賦 5年目（%）</label>
-            <input type="number" id="cr_y5" value="96" min="0" max="100" step="0.1" oninput="recalculate()">
-          </div>
-        </div>
-        <div class="s-sub">獲得コスト</div>
-        <div class="field">
-          <label>単価（円）</label>
-          <input type="number" id="acq_unit" value="800000" oninput="recalculate()">
-        </div>
-      </div>
+  <header>
+    <h1>💴 割賦 vs 月額プラン｜収益比較シミュレーター</h1>
+    <div class="header-right">
+      <span class="hint">数値を変更すると自動で再計算されます</span>
+      <button class="btn-reset" onclick="resetToDefaults()">↺ 初期値に戻す</button>
     </div>
+  </header>
 
-    <!-- 新規 / 割賦 -->
-    <div class="s-section">
-      <div class="s-head theme-new open" onclick="toggleSection(this)">
-        🔵 新規獲得 / 割賦プラン <span class="arrow open">▶</span>
-      </div>
-      <div class="s-body open">
-        <div class="s-sub">ショット売上</div>
-        <div class="row2">
-          <div class="field">
-            <label>割賦1年目（円）</label>
-            <input type="number" id="ni_ss_y1" value="1130000" oninput="recalculate()">
-          </div>
-          <div class="field">
-            <label>割賦5年目（円）</label>
-            <input type="number" id="ni_ss_y5" value="1440000" oninput="recalculate()">
-          </div>
+  <div class="container">
+    <!-- ===== SIDEBAR ===== -->
+    <aside>
+      <!-- 共通設定 -->
+      <div class="s-section">
+        <div class="s-head theme-common open" onclick="toggleSection(this)">
+          📋 共通・前提条件 <span class="arrow open">▶</span>
         </div>
-        <div class="field">
-          <label>ストック売上（月額・円）</label>
-          <input type="number" id="ni_stk_s" value="3000" oninput="recalculate()">
-        </div>
-        <div class="s-sub">ショット原価</div>
-        <div class="row2">
-          <div class="field">
-            <label>割賦1年目（円）</label>
-            <input type="number" id="ni_sc_y1" value="240000" oninput="recalculate()">
+        <div class="s-body open">
+          <div class="s-sub">試算期間</div>
+          <div class="row2">
+            <div class="field">
+              <label>年数</label>
+              <input type="number" id="years" value="10" min="1" max="30" oninput="syncMonths();saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>月数（自動）</label>
+              <input type="number" id="months" value="120" readonly>
+            </div>
           </div>
-          <div class="field">
-            <label>割賦5年目（円）</label>
-            <input type="number" id="ni_sc_y5" value="240000" oninput="recalculate()">
+          <div class="s-sub">与信通過率</div>
+          <div class="credit-toggle-row">
+            <label class="sw">
+              <input type="checkbox" id="credit_apply" checked onchange="applyCreditToggle();saveToStorage()">
+              <span class="sw-track"></span>
+            </label>
+            <span class="sw-label" id="credit_label">与信通過率を加味する</span>
           </div>
-        </div>
-        <div class="s-sub">残債</div>
-        <div class="row2">
-          <div class="field">
-            <label>割賦1年目（円）</label>
-            <input type="number" id="ni_db_y1" value="0" oninput="recalculate()">
+          <div class="row2" id="credit_inputs">
+            <div class="field">
+              <label>割賦 1年目（%）</label>
+              <input type="number" id="cr_y1" value="82" min="0" max="100" step="0.1" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>割賦 5年目（%）</label>
+              <input type="number" id="cr_y5" value="96" min="0" max="100" step="0.1" oninput="saveToStorage();recalculate()">
+            </div>
           </div>
+          <div class="s-sub">獲得コスト</div>
           <div class="field">
-            <label>割賦5年目（円）</label>
-            <input type="number" id="ni_db_y5" value="370000" oninput="recalculate()">
-          </div>
-        </div>
-        <div class="field">
-          <label>ストック原価（月額・円）</label>
-          <input type="number" id="ni_stk_c" value="1319" oninput="recalculate()">
-        </div>
-        <div class="s-sub">獲得コスト 平均値</div>
-        <div class="row2">
-          <div class="field">
-            <label>割賦1年目</label>
-            <input type="number" id="ni_avg_y1" value="1.5" step="0.1" min="0.1" oninput="recalculate()">
-          </div>
-          <div class="field">
-            <label>割賦5年目</label>
-            <input type="number" id="ni_avg_y5" value="5.0" step="0.1" min="0.1" oninput="recalculate()">
+            <label>単価（円）</label>
+            <input type="number" id="acq_unit" value="800000" oninput="saveToStorage();recalculate()">
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 新規 / 月額 -->
-    <div class="s-section">
-      <div class="s-head theme-new open" onclick="toggleSection(this)">
-        🔵 新規獲得 / 月額プラン <span class="arrow open">▶</span>
-      </div>
-      <div class="s-body open">
-        <div class="row2">
+      <!-- 新規 / 割賦 -->
+      <div class="s-section">
+        <div class="s-head theme-new open" onclick="toggleSection(this)">
+          🔵 新規獲得 / 割賦プラン <span class="arrow open">▶</span>
+        </div>
+        <div class="s-body open">
+          <div class="s-sub">ショット売上</div>
+          <div class="row2">
+            <div class="field">
+              <label>割賦1年目（円）</label>
+              <input type="number" id="ni_ss_y1" value="1130000" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>割賦5年目（円）</label>
+              <input type="number" id="ni_ss_y5" value="1440000" oninput="saveToStorage();recalculate()">
+            </div>
+          </div>
           <div class="field">
-            <label>月額売上（月額・円）</label>
-            <input type="number" id="nm_sales" value="15000" oninput="recalculate()">
+            <label>ストック売上（月額・円）</label>
+            <input type="number" id="ni_stk_s" value="3000" oninput="saveToStorage();recalculate()">
+          </div>
+          <div class="s-sub">ショット原価</div>
+          <div class="row2">
+            <div class="field">
+              <label>割賦1年目（円）</label>
+              <input type="number" id="ni_sc_y1" value="240000" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>割賦5年目（円）</label>
+              <input type="number" id="ni_sc_y5" value="240000" oninput="saveToStorage();recalculate()">
+            </div>
+          </div>
+          <div class="s-sub">残債</div>
+          <div class="row2">
+            <div class="field">
+              <label>割賦1年目（円）</label>
+              <input type="number" id="ni_db_y1" value="0" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>割賦5年目（円）</label>
+              <input type="number" id="ni_db_y5" value="370000" oninput="saveToStorage();recalculate()">
+            </div>
           </div>
           <div class="field">
             <label>ストック原価（月額・円）</label>
-            <input type="number" id="nm_stk_c" value="1908" oninput="recalculate()">
+            <input type="number" id="ni_stk_c" value="1319" oninput="saveToStorage();recalculate()">
           </div>
-        </div>
-        <div class="row2">
-          <div class="field">
-            <label>初期制作費（一括・円）</label>
-            <input type="number" id="nm_init_c" value="25000" oninput="recalculate()">
-          </div>
-          <div class="field">
-            <label>獲得コスト 平均値</label>
-            <input type="number" id="nm_avg" value="3.0" step="0.1" min="0.1" oninput="recalculate()">
+          <div class="s-sub">獲得コスト 平均値</div>
+          <div class="row2">
+            <div class="field">
+              <label>割賦1年目</label>
+              <input type="number" id="ni_avg_y1" value="1.5" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>割賦5年目</label>
+              <input type="number" id="ni_avg_y5" value="5.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- リプレイス / 割賦 -->
-    <div class="s-section">
-      <div class="s-head theme-rep open" onclick="toggleSection(this)">
-        🟢 リプレイス / 割賦プラン <span class="arrow open">▶</span>
-      </div>
-      <div class="s-body open">
-        <div class="s-sub">ショット売上</div>
-        <div class="row2">
-          <div class="field">
-            <label>1件目（円）</label>
-            <input type="number" id="ri_ss_1" value="1440000" oninput="recalculate()">
-          </div>
-          <div class="field">
-            <label>2件目（円）</label>
-            <input type="number" id="ri_ss_2" value="1440000" oninput="recalculate()">
-          </div>
+      <!-- 新規 / 月額 -->
+      <div class="s-section">
+        <div class="s-head theme-new open" onclick="toggleSection(this)">
+          🔵 新規獲得 / 月額プラン <span class="arrow open">▶</span>
         </div>
-        <div class="field">
-          <label>ストック売上（月額・円）</label>
-          <input type="number" id="ri_stk_s" value="3000" oninput="recalculate()">
-        </div>
-        <div class="s-sub">ショット原価</div>
-        <div class="row2">
-          <div class="field">
-            <label>1件目（円）</label>
-            <input type="number" id="ri_sc_1" value="240000" oninput="recalculate()">
+        <div class="s-body open">
+          <div class="row2">
+            <div class="field">
+              <label>月額売上（月額・円）</label>
+              <input type="number" id="nm_sales" value="15000" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>ストック原価（月額・円）</label>
+              <input type="number" id="nm_stk_c" value="1908" oninput="saveToStorage();recalculate()">
+            </div>
           </div>
-          <div class="field">
-            <label>2件目（円）</label>
-            <input type="number" id="ri_sc_2" value="240000" oninput="recalculate()">
-          </div>
-        </div>
-        <div class="s-sub">残債</div>
-        <div class="row2">
-          <div class="field">
-            <label>1件目（円）</label>
-            <input type="number" id="ri_db_1" value="370000" oninput="recalculate()">
-          </div>
-          <div class="field">
-            <label>2件目（円）</label>
-            <input type="number" id="ri_db_2" value="370000" oninput="recalculate()">
-          </div>
-        </div>
-        <div class="field">
-          <label>ストック原価（月額・円）</label>
-          <input type="number" id="ri_stk_c" value="1319" oninput="recalculate()">
-        </div>
-        <div class="s-sub">獲得コスト 平均値</div>
-        <div class="row2">
-          <div class="field">
-            <label>1件目</label>
-            <input type="number" id="ri_avg_1" value="5.0" step="0.1" min="0.1" oninput="recalculate()">
-          </div>
-          <div class="field">
-            <label>2件目</label>
-            <input type="number" id="ri_avg_2" value="5.0" step="0.1" min="0.1" oninput="recalculate()">
+          <div class="row2">
+            <div class="field">
+              <label>初期制作費（一括・円）</label>
+              <input type="number" id="nm_init_c" value="25000" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>獲得コスト 平均値</label>
+              <input type="number" id="nm_avg" value="3.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- リプレイス / 月額 -->
-    <div class="s-section">
-      <div class="s-head theme-rep open" onclick="toggleSection(this)">
-        🟢 リプレイス / 月額プラン <span class="arrow open">▶</span>
-      </div>
-      <div class="s-body open">
-        <div class="row2">
+      <!-- リプレイス / 割賦 -->
+      <div class="s-section">
+        <div class="s-head theme-rep open" onclick="toggleSection(this)">
+          🟢 リプレイス / 割賦プラン <span class="arrow open">▶</span>
+        </div>
+        <div class="s-body open">
+          <div class="s-sub">ショット売上</div>
+          <div class="row2">
+            <div class="field">
+              <label>1件目（円）</label>
+              <input type="number" id="ri_ss_1" value="1440000" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>2件目（円）</label>
+              <input type="number" id="ri_ss_2" value="1440000" oninput="saveToStorage();recalculate()">
+            </div>
+          </div>
           <div class="field">
-            <label>月額売上（月額・円）</label>
-            <input type="number" id="rm_sales" value="20000" oninput="recalculate()">
+            <label>ストック売上（月額・円）</label>
+            <input type="number" id="ri_stk_s" value="3000" oninput="saveToStorage();recalculate()">
+          </div>
+          <div class="s-sub">ショット原価</div>
+          <div class="row2">
+            <div class="field">
+              <label>1件目（円）</label>
+              <input type="number" id="ri_sc_1" value="240000" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>2件目（円）</label>
+              <input type="number" id="ri_sc_2" value="240000" oninput="saveToStorage();recalculate()">
+            </div>
+          </div>
+          <div class="s-sub">残債</div>
+          <div class="row2">
+            <div class="field">
+              <label>1件目（円）</label>
+              <input type="number" id="ri_db_1" value="370000" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>2件目（円）</label>
+              <input type="number" id="ri_db_2" value="370000" oninput="saveToStorage();recalculate()">
+            </div>
           </div>
           <div class="field">
             <label>ストック原価（月額・円）</label>
-            <input type="number" id="rm_stk_c" value="2961" oninput="recalculate()">
+            <input type="number" id="ri_stk_c" value="1319" oninput="saveToStorage();recalculate()">
+          </div>
+          <div class="s-sub">獲得コスト 平均値</div>
+          <div class="row2">
+            <div class="field">
+              <label>1件目</label>
+              <input type="number" id="ri_avg_1" value="5.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>2件目</label>
+              <input type="number" id="ri_avg_2" value="5.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+            </div>
           </div>
         </div>
-        <div class="row2">
-          <div class="field">
-            <label>初期制作費（一括・円）</label>
-            <input type="number" id="rm_init_c" value="25000" oninput="recalculate()">
+      </div>
+
+      <!-- リプレイス / 月額 -->
+      <div class="s-section">
+        <div class="s-head theme-rep open" onclick="toggleSection(this)">
+          🟢 リプレイス / 月額プラン <span class="arrow open">▶</span>
+        </div>
+        <div class="s-body open">
+          <div class="row2">
+            <div class="field">
+              <label>月額売上（月額・円）</label>
+              <input type="number" id="rm_sales" value="20000" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>ストック原価（月額・円）</label>
+              <input type="number" id="rm_stk_c" value="2961" oninput="saveToStorage();recalculate()">
+            </div>
           </div>
-          <div class="field">
-            <label>獲得コスト 平均値</label>
-            <input type="number" id="rm_avg" value="6.0" step="0.1" min="0.1" oninput="recalculate()">
+          <div class="row2">
+            <div class="field">
+              <label>初期制作費（一括・円）</label>
+              <input type="number" id="rm_init_c" value="25000" oninput="saveToStorage();recalculate()">
+            </div>
+            <div class="field">
+              <label>獲得コスト 平均値</label>
+              <input type="number" id="rm_avg" value="6.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </aside>
 
-  </aside>
-
-  <!-- ===== MAIN ===== -->
-  <main>
-
-    <!-- サマリーカード -->
-    <div class="summary-row">
-      <div class="sum-card ni" id="card_ni">
-        <div class="sc-label">🔵 新規獲得 / 割賦</div>
-        <div class="sc-value" id="sv_ni">—</div>
-        <div class="sc-sub">試算期間内 利益合計（円）</div>
-      </div>
-      <div class="sum-card nm" id="card_nm">
-        <div class="sc-label">🔵 新規獲得 / 月額プラン</div>
-        <div class="sc-value" id="sv_nm">—</div>
-        <div class="sc-sub">試算期間内 利益合計（円）</div>
-      </div>
-      <div class="sum-card ri" id="card_ri">
-        <div class="sc-label">🟢 リプレイス / 割賦</div>
-        <div class="sc-value" id="sv_ri">—</div>
-        <div class="sc-sub">試算期間内 利益合計（円）</div>
-      </div>
-      <div class="sum-card rm" id="card_rm">
-        <div class="sc-label">🟢 リプレイス / 月額プラン</div>
-        <div class="sc-value" id="sv_rm">—</div>
-        <div class="sc-sub">試算期間内 利益合計（円）</div>
-      </div>
-    </div>
-
-    <!-- バーチャート -->
-    <div class="chart-wrap">
-      <div class="chart-title">📊 利益比較チャート</div>
-      <div class="bar-group">
-        <div class="bar-label">🔵 新規獲得 / 割賦</div>
-        <div class="bar-track"><div class="bar-fill ni" id="bar_ni">—</div></div>
-      </div>
-      <div class="bar-group">
-        <div class="bar-label">🔵 新規獲得 / 月額プラン</div>
-        <div class="bar-track"><div class="bar-fill nm" id="bar_nm">—</div></div>
-      </div>
-      <div class="bar-group">
-        <div class="bar-label">🟢 リプレイス / 割賦</div>
-        <div class="bar-track"><div class="bar-fill ri" id="bar_ri">—</div></div>
-      </div>
-      <div class="bar-group">
-        <div class="bar-label">🟢 リプレイス / 月額プラン</div>
-        <div class="bar-track"><div class="bar-fill rm" id="bar_rm">—</div></div>
-      </div>
-      <div class="chart-scale" id="chart_scale"></div>
-    </div>
-
-    <!-- 詳細パネル 2×2 -->
-    <div class="panels-grid">
-
-      <div class="panel new">
-        <div class="panel-head">🔵 新規獲得 / 割賦プラン 詳細</div>
-        <table class="dtbl">
-          <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
-          <tbody id="tbody_ni"></tbody>
-        </table>
+    <!-- ===== MAIN ===== -->
+    <main>
+      <!-- サマリーカード -->
+      <div class="summary-row">
+        <div class="sum-card ni" id="card_ni">
+          <div class="sc-label">🔵 新規獲得 / 割賦</div>
+          <div class="sc-value" id="sv_ni">—</div>
+          <div class="sc-sub">試算期間内 利益合計（円）</div>
+        </div>
+        <div class="sum-card nm" id="card_nm">
+          <div class="sc-label">🔵 新規獲得 / 月額プラン</div>
+          <div class="sc-value" id="sv_nm">—</div>
+          <div class="sc-sub">試算期間内 利益合計（円）</div>
+        </div>
+        <div class="sum-card ri" id="card_ri">
+          <div class="sc-label">🟢 リプレイス / 割賦</div>
+          <div class="sc-value" id="sv_ri">—</div>
+          <div class="sc-sub">試算期間内 利益合計（円）</div>
+        </div>
+        <div class="sum-card rm" id="card_rm">
+          <div class="sc-label">🟢 リプレイス / 月額プラン</div>
+          <div class="sc-value" id="sv_rm">—</div>
+          <div class="sc-sub">試算期間内 利益合計（円）</div>
+        </div>
       </div>
 
-      <div class="panel new">
-        <div class="panel-head">🔵 新規獲得 / 月額プラン 詳細</div>
-        <table class="dtbl">
-          <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
-          <tbody id="tbody_nm"></tbody>
-        </table>
+      <!-- バーチャート -->
+      <div class="chart-wrap">
+        <div class="chart-title">📊 利益比較チャート</div>
+        <div class="bar-group">
+          <div class="bar-label">🔵 新規獲得 / 割賦</div>
+          <div class="bar-track"><div class="bar-fill ni" id="bar_ni">—</div></div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-label">🔵 新規獲得 / 月額プラン</div>
+          <div class="bar-track"><div class="bar-fill nm" id="bar_nm">—</div></div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-label">🟢 リプレイス / 割賦</div>
+          <div class="bar-track"><div class="bar-fill ri" id="bar_ri">—</div></div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-label">🟢 リプレイス / 月額プラン</div>
+          <div class="bar-track"><div class="bar-fill rm" id="bar_rm">—</div></div>
+        </div>
+        <div class="chart-scale" id="chart_scale"></div>
       </div>
 
-      <div class="panel rep">
-        <div class="panel-head">🟢 リプレイス / 割賦プラン 詳細</div>
-        <table class="dtbl">
-          <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
-          <tbody id="tbody_ri"></tbody>
-        </table>
+      <!-- 詳細パネル 2×2 -->
+      <div class="panels-grid">
+        <div class="panel new">
+          <div class="panel-head">🔵 新規獲得 / 割賦プラン 詳細</div>
+          <table class="dtbl">
+            <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+            <tbody id="tbody_ni"></tbody>
+          </table>
+        </div>
+        <div class="panel new">
+          <div class="panel-head">🔵 新規獲得 / 月額プラン 詳細</div>
+          <table class="dtbl">
+            <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+            <tbody id="tbody_nm"></tbody>
+          </table>
+        </div>
+        <div class="panel rep">
+          <div class="panel-head">🟢 リプレイス / 割賦プラン 詳細</div>
+          <table class="dtbl">
+            <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+            <tbody id="tbody_ri"></tbody>
+          </table>
+        </div>
+        <div class="panel rep">
+          <div class="panel-head">🟢 リプレイス / 月額プラン 詳細</div>
+          <table class="dtbl">
+            <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+            <tbody id="tbody_rm"></tbody>
+          </table>
+        </div>
       </div>
+    </main>
+  </div>
 
-      <div class="panel rep">
-        <div class="panel-head">🟢 リプレイス / 月額プラン 詳細</div>
-        <table class="dtbl">
-          <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
-          <tbody id="tbody_rm"></tbody>
-        </table>
-      </div>
+  <script>
+    /* ── デフォルト値 ── */
+    const DEFAULTS = {
+      years:     10,
+      cr_y1:     82,
+      cr_y5:     96,
+      acq_unit:  800000,
+      ni_ss_y1:  1130000,
+      ni_ss_y5:  1440000,
+      ni_stk_s:  3000,
+      ni_sc_y1:  240000,
+      ni_sc_y5:  240000,
+      ni_db_y1:  0,
+      ni_db_y5:  370000,
+      ni_stk_c:  1319,
+      ni_avg_y1: 1.5,
+      ni_avg_y5: 5.0,
+      nm_sales:  15000,
+      nm_stk_c:  1908,
+      nm_init_c: 25000,
+      nm_avg:    3.0,
+      ri_ss_1:   1440000,
+      ri_ss_2:   1440000,
+      ri_stk_s:  3000,
+      ri_sc_1:   240000,
+      ri_sc_2:   240000,
+      ri_db_1:   370000,
+      ri_db_2:   370000,
+      ri_stk_c:  1319,
+      ri_avg_1:  5.0,
+      ri_avg_2:  5.0,
+      rm_sales:  20000,
+      rm_stk_c:  2961,
+      rm_init_c: 25000,
+      rm_avg:    6.0,
+      credit_apply: true,
+    };
 
-    </div>
-  </main>
-</div>
+    const STORAGE_KEY = 'waribiki_simulator_v1';
 
-<script>
-  /* ── ヘルパー ── */
-  const g = id => parseFloat(document.getElementById(id).value) || 0;
-  const fmt = n => Math.round(n).toLocaleString('ja-JP');
-
-  function syncMonths() {
-    document.getElementById('months').value = g('years') * 12;
-  }
-
-  function applyCreditToggle() {
-    const apply = document.getElementById('credit_apply').checked;
-    const label = document.getElementById('credit_label');
-    const y1    = document.getElementById('cr_y1');
-    const y5    = document.getElementById('cr_y5');
-
-    label.textContent = apply ? '与信通過率を加味する' : '与信通過率を加味しない（100%）';
-
-    if (apply) {
-      y1.value = y1.dataset.saved ?? y1.value;
-      y5.value = y5.dataset.saved ?? y5.value;
-      y1.readOnly = false;
-      y5.readOnly = false;
-      y1.classList.remove('cr-off');
-      y5.classList.remove('cr-off');
-    } else {
-      y1.dataset.saved = y1.value;
-      y5.dataset.saved = y5.value;
-      y1.value = 100;
-      y5.value = 100;
-      y1.readOnly = true;
-      y5.readOnly = true;
-      y1.classList.add('cr-off');
-      y5.classList.add('cr-off');
+    /* ── LocalStorage ── */
+    function saveToStorage() {
+      const data = {};
+      Object.keys(DEFAULTS).forEach(id => {
+        if (id === 'credit_apply') {
+          data[id] = document.getElementById(id).checked;
+        } else {
+          const el = document.getElementById(id);
+          if (el) data[id] = el.value;
+        }
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     }
+
+    function loadFromStorage() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      try {
+        const data = JSON.parse(raw);
+        Object.keys(DEFAULTS).forEach(id => {
+          if (id === 'credit_apply') {
+            const el = document.getElementById(id);
+            if (el && data[id] !== undefined) el.checked = data[id];
+          } else {
+            const el = document.getElementById(id);
+            if (el && data[id] !== undefined) el.value = data[id];
+          }
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function resetToDefaults() {
+      if (!confirm('すべての値を初期値に戻しますか？')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      Object.keys(DEFAULTS).forEach(id => {
+        if (id === 'credit_apply') {
+          const el = document.getElementById(id);
+          if (el) el.checked = DEFAULTS[id];
+        } else {
+          const el = document.getElementById(id);
+          if (el) el.value = DEFAULTS[id];
+        }
+      });
+      // 与信通過率トグルの状態を再適用
+      applyCreditToggle();
+      recalculate();
+    }
+
+    /* ── ヘルパー ── */
+    const g = id => parseFloat(document.getElementById(id).value) || 0;
+    const fmt = n => Math.round(n).toLocaleString('ja-JP');
+
+    function syncMonths() {
+      document.getElementById('months').value = g('years') * 12;
+    }
+
+    function applyCreditToggle() {
+      const apply = document.getElementById('credit_apply').checked;
+      const label = document.getElementById('credit_label');
+      const y1 = document.getElementById('cr_y1');
+      const y5 = document.getElementById('cr_y5');
+
+      label.textContent = apply ? '与信通過率を加味する' : '与信通過率を加味しない（100%）';
+
+      if (apply) {
+        y1.value = y1.dataset.saved ?? y1.value;
+        y5.value = y5.dataset.saved ?? y5.value;
+        y1.readOnly = false;
+        y5.readOnly = false;
+        y1.classList.remove('cr-off');
+        y5.classList.remove('cr-off');
+      } else {
+        y1.dataset.saved = y1.value;
+        y5.dataset.saved = y5.value;
+        y1.value = 100;
+        y5.value = 100;
+        y1.readOnly = true;
+        y5.readOnly = true;
+        y1.classList.add('cr-off');
+        y5.classList.add('cr-off');
+      }
+      recalculate();
+    }
+
+    function toggleSection(head) {
+      head.classList.toggle('open');
+      head.querySelector('.arrow').classList.toggle('open');
+      head.nextElementSibling.classList.toggle('open');
+    }
+
+    /* ── 計算ロジック ── */
+    function calcNI() {
+      const mo = g('years') * 12;
+      const c1 = g('cr_y1') / 100, c5 = g('cr_y5') / 100;
+      const au = g('acq_unit');
+
+      const ss1 = g('ni_ss_y1') * c1;
+      const ss5 = g('ni_ss_y5') * c5;
+      const ss_tot = ss1 + ss5;
+      const stk_s = g('ni_stk_s') * mo;
+      const sales = ss_tot + stk_s;
+
+      const sc1 = g('ni_sc_y1') * c1;
+      const sc5 = g('ni_sc_y5') * c5;
+      const db1 = g('ni_db_y1');
+      const db5 = g('ni_db_y5');
+      const sc_tot = sc1 + sc5 + db1 + db5;
+      const stk_c = g('ni_stk_c') * mo;
+      const cost = sc_tot + stk_c;
+      const gross = sales - cost;
+
+      const a1 = au / g('ni_avg_y1');
+      const a5 = au / g('ni_avg_y5');
+      const acq = a1 + a5;
+      const profit = gross - acq;
+
+      return { ss1, ss5, ss_tot, stk_s, sales, sc1, sc5, db1, db5, sc_tot, stk_c, cost, gross, a1, a5, acq, profit };
+    }
+
+    function calcNM() {
+      const mo = g('years') * 12;
+      const au = g('acq_unit');
+
+      const sales = g('nm_sales') * mo;
+      const stk_c = g('nm_stk_c') * mo;
+      const init = g('nm_init_c');
+      const cost = stk_c + init;
+      const gross = sales - cost;
+
+      const acq = au / g('nm_avg');
+      const profit = gross - acq;
+
+      return { sales, stk_c, init, cost, gross, acq, profit };
+    }
+
+    function calcRI() {
+      const mo = g('years') * 12;
+      const c5 = g('cr_y5') / 100;
+      const au = g('acq_unit');
+
+      const ss1 = g('ri_ss_1') * c5;
+      const ss2 = g('ri_ss_2') * c5;
+      const ss_tot = ss1 + ss2;
+      const stk_s = g('ri_stk_s') * mo;
+      const sales = ss_tot + stk_s;
+
+      const sc1 = g('ri_sc_1') * c5;
+      const sc2 = g('ri_sc_2') * c5;
+      const db1 = g('ri_db_1');
+      const db2 = g('ri_db_2');
+      const sc_tot = sc1 + sc2 + db1 + db2;
+      const stk_c = g('ri_stk_c') * mo;
+      const cost = sc_tot + stk_c;
+      const gross = sales - cost;
+
+      const a1 = au / g('ri_avg_1');
+      const a2 = au / g('ri_avg_2');
+      const acq = a1 + a2;
+      const profit = gross - acq;
+
+      return { ss1, ss2, ss_tot, stk_s, sales, sc1, sc2, db1, db2, sc_tot, stk_c, cost, gross, a1, a2, acq, profit };
+    }
+
+    function calcRM() {
+      const mo = g('years') * 12;
+      const au = g('acq_unit');
+
+      const sales = g('rm_sales') * mo;
+      const stk_c = g('rm_stk_c') * mo;
+      const init = g('rm_init_c');
+      const cost = stk_c + init;
+      const gross = sales - cost;
+
+      const acq = au / g('rm_avg');
+      const profit = gross - acq;
+
+      return { sales, stk_c, init, cost, gross, acq, profit };
+    }
+
+    /* ── テーブル行生成 ── */
+    const tr = (label, val, cls = '', indent = false) => {
+      const neg = val < 0 ? 'negative' : '';
+      const ic = indent ? ' indent' : '';
+      return `<tr class="${cls}"><td class="${ic}">${label}</td><td class="r ${neg}">${fmt(val)}</td></tr>`;
+    };
+    const sec = label => `<tr class="section-row"><td colspan="2">${label}</td></tr>`;
+
+    function buildNI(d) {
+      const c1 = g('cr_y1'), c5 = g('cr_y5'), mo = g('years') * 12;
+      return [
+        sec('■ 売上'),
+        tr(`ショット売上（割賦1年目 × ${c1}%）`, d.ss1, '', true),
+        tr(`ショット売上（割賦5年目 × ${c5}%）`, d.ss5, '', true),
+        tr('ショット売上合計', d.ss_tot, 'sub'),
+        tr(`ストック売上（${fmt(g('ni_stk_s'))}円 × ${mo}ヶ月）`, d.stk_s, '', true),
+        tr('売上合計', d.sales, 'total'),
+        sec('■ 原価（与信通過率を加味）'),
+        tr(`ショット原価（割賦1年目 × ${c1}%）`, d.sc1, '', true),
+        tr(`ショット原価（割賦5年目 × ${c5}%）`, d.sc5, '', true),
+        tr('残債（割賦1年目）', d.db1, '', true),
+        tr('残債（割賦5年目）', d.db5, '', true),
+        tr('ショット原価合計', d.sc_tot, 'sub'),
+        tr(`ストック原価（${fmt(g('ni_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
+        tr('原価合計', d.cost, 'total'),
+        tr('粗利（売上 − 原価）', d.gross, 'total'),
+        sec('■ 獲得コスト'),
+        tr(`割賦1年目（単価 ÷ ${g('ni_avg_y1')}）`, d.a1, '', true),
+        tr(`割賦5年目（単価 ÷ ${g('ni_avg_y5')}）`, d.a5, '', true),
+        tr('コスト合計', d.acq, 'total'),
+        tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
+      ].join('');
+    }
+
+    function buildNM(d) {
+      const mo = g('years') * 12;
+      return [
+        sec('■ 売上'),
+        tr(`月額売上（${fmt(g('nm_sales'))}円 × ${mo}ヶ月）`, d.sales),
+        sec('■ 原価'),
+        tr(`ストック原価（${fmt(g('nm_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
+        tr('初期制作費', d.init, '', true),
+        tr('原価合計', d.cost, 'total'),
+        tr('粗利（売上 − 原価）', d.gross, 'total'),
+        sec('■ 獲得コスト'),
+        tr(`獲得コスト（単価 ÷ ${g('nm_avg')}）`, d.acq),
+        tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
+      ].join('');
+    }
+
+    function buildRI(d) {
+      const c5 = g('cr_y5'), mo = g('years') * 12;
+      return [
+        sec('■ 売上'),
+        tr(`ショット売上（1件目 × ${c5}%）`, d.ss1, '', true),
+        tr(`ショット売上（2件目 × ${c5}%）`, d.ss2, '', true),
+        tr('ショット売上合計', d.ss_tot, 'sub'),
+        tr(`ストック売上（${fmt(g('ri_stk_s'))}円 × ${mo}ヶ月）`, d.stk_s, '', true),
+        tr('リプレイス売上合計', d.sales, 'total'),
+        sec('■ リプレイス原価（与信通過率を加味）'),
+        tr(`ショット原価（1件目 × ${c5}%）`, d.sc1, '', true),
+        tr(`ショット原価（2件目 × ${c5}%）`, d.sc2, '', true),
+        tr('残債（1件目）', d.db1, '', true),
+        tr('残債（2件目）', d.db2, '', true),
+        tr('ショット原価合計', d.sc_tot, 'sub'),
+        tr(`ストック原価（${fmt(g('ri_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
+        tr('リプレイス原価合計', d.cost, 'total'),
+        tr('粗利（売上 − 原価）', d.gross, 'total'),
+        sec('■ 獲得コスト'),
+        tr(`1件目（単価 ÷ ${g('ri_avg_1')}）`, d.a1, '', true),
+        tr(`2件目（単価 ÷ ${g('ri_avg_2')}）`, d.a2, '', true),
+        tr('コスト合計', d.acq, 'total'),
+        tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
+      ].join('');
+    }
+
+    function buildRM(d) {
+      const mo = g('years') * 12;
+      return [
+        sec('■ 売上'),
+        tr(`月額売上（${fmt(g('rm_sales'))}円 × ${mo}ヶ月）`, d.sales),
+        sec('■ 原価'),
+        tr(`ストック原価（${fmt(g('rm_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
+        tr('初期制作費', d.init, '', true),
+        tr('原価合計', d.cost, 'total'),
+        tr('粗利（売上 − 原価）', d.gross, 'total'),
+        sec('■ 獲得コスト'),
+        tr(`獲得コスト（単価 ÷ ${g('rm_avg')}）`, d.acq),
+        tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
+      ].join('');
+    }
+
+    /* ── メイン再計算 ── */
+    function recalculate() {
+      syncMonths();
+      const ni = calcNI();
+      const nm = calcNM();
+      const ri = calcRI();
+      const rm = calcRM();
+
+      // サマリー
+      const profits = { ni: ni.profit, nm: nm.profit, ri: ri.profit, rm: rm.profit };
+      const maxProfit = Math.max(...Object.values(profits));
+
+      ['ni', 'nm', 'ri', 'rm'].forEach(k => {
+        const val = profits[k];
+        const sv = document.getElementById(`sv_${k}`);
+        const card = document.getElementById(`card_${k}`);
+        sv.textContent = fmt(val);
+        sv.classList.toggle('negative', val < 0);
+        card.classList.toggle('best-badge', val === maxProfit && maxProfit > 0);
+      });
+
+      // バーチャート（目盛り付き）
+      const rawMax = Math.max(1, ...Object.values(profits));
+      const unit = rawMax <= 2000000 ? 500000 : rawMax <= 5000000 ? 1000000 : 2000000;
+      const scaleMax = Math.ceil(rawMax / unit) * unit;
+
+      ['ni', 'nm', 'ri', 'rm'].forEach(k => {
+        const bar = document.getElementById(`bar_${k}`);
+        const pct = Math.max(0, profits[k]) / scaleMax * 100;
+        bar.style.width = pct + '%';
+        bar.textContent = fmt(profits[k]);
+      });
+
+      // 目盛りラベル生成
+      const ticks = 4;
+      let scaleHTML = '';
+      for (let i = 0; i <= ticks; i++) {
+        const pct = (i / ticks) * 100;
+        const val = (i / ticks) * scaleMax;
+        const label = val === 0 ? '0' : (val / 10000) + '万';
+        scaleHTML += `<span class="scale-tick" style="left:${pct}%">${label}</span>`;
+      }
+      document.getElementById('chart_scale').innerHTML = scaleHTML;
+
+      // 詳細テーブル
+      document.getElementById('tbody_ni').innerHTML = buildNI(ni);
+      document.getElementById('tbody_nm').innerHTML = buildNM(nm);
+      document.getElementById('tbody_ri').innerHTML = buildRI(ri);
+      document.getElementById('tbody_rm').innerHTML = buildRM(rm);
+    }
+
+    /* ── 初期化 ── */
+    loadFromStorage();
+    applyCreditToggle();
     recalculate();
-  }
-
-  function toggleSection(head) {
-    head.classList.toggle('open');
-    head.querySelector('.arrow').classList.toggle('open');
-    head.nextElementSibling.classList.toggle('open');
-  }
-
-  /* ── 計算ロジック ── */
-  function calcNI() {
-    const mo = g('years') * 12;
-    const c1 = g('cr_y1') / 100, c5 = g('cr_y5') / 100;
-    const au = g('acq_unit');
-
-    const ss1 = g('ni_ss_y1') * c1;
-    const ss5 = g('ni_ss_y5') * c5;
-    const ss_tot = ss1 + ss5;
-    const stk_s = g('ni_stk_s') * mo;
-    const sales = ss_tot + stk_s;
-
-    const sc1 = g('ni_sc_y1') * c1;
-    const sc5 = g('ni_sc_y5') * c5;
-    const db1 = g('ni_db_y1');
-    const db5 = g('ni_db_y5');
-    const sc_tot = sc1 + sc5 + db1 + db5;
-    const stk_c = g('ni_stk_c') * mo;
-    const cost = sc_tot + stk_c;
-
-    const gross = sales - cost;
-    const a1 = au / g('ni_avg_y1');
-    const a5 = au / g('ni_avg_y5');
-    const acq = a1 + a5;
-    const profit = gross - acq;
-
-    return { ss1, ss5, ss_tot, stk_s, sales, sc1, sc5, db1, db5, sc_tot, stk_c, cost, gross, a1, a5, acq, profit };
-  }
-
-  function calcNM() {
-    const mo = g('years') * 12;
-    const au = g('acq_unit');
-    const sales = g('nm_sales') * mo;
-    const stk_c = g('nm_stk_c') * mo;
-    const init  = g('nm_init_c');
-    const cost  = stk_c + init;
-    const gross = sales - cost;
-    const acq   = au / g('nm_avg');
-    const profit = gross - acq;
-    return { sales, stk_c, init, cost, gross, acq, profit };
-  }
-
-  function calcRI() {
-    const mo = g('years') * 12;
-    const c5 = g('cr_y5') / 100;
-    const au = g('acq_unit');
-
-    const ss1 = g('ri_ss_1') * c5;
-    const ss2 = g('ri_ss_2') * c5;
-    const ss_tot = ss1 + ss2;
-    const stk_s = g('ri_stk_s') * mo;
-    const sales = ss_tot + stk_s;
-
-    const sc1 = g('ri_sc_1') * c5;
-    const sc2 = g('ri_sc_2') * c5;
-    const db1 = g('ri_db_1');
-    const db2 = g('ri_db_2');
-    const sc_tot = sc1 + sc2 + db1 + db2;
-    const stk_c = g('ri_stk_c') * mo;
-    const cost = sc_tot + stk_c;
-
-    const gross = sales - cost;
-    const a1 = au / g('ri_avg_1');
-    const a2 = au / g('ri_avg_2');
-    const acq = a1 + a2;
-    const profit = gross - acq;
-
-    return { ss1, ss2, ss_tot, stk_s, sales, sc1, sc2, db1, db2, sc_tot, stk_c, cost, gross, a1, a2, acq, profit };
-  }
-
-  function calcRM() {
-    const mo = g('years') * 12;
-    const au = g('acq_unit');
-    const sales = g('rm_sales') * mo;
-    const stk_c = g('rm_stk_c') * mo;
-    const init  = g('rm_init_c');
-    const cost  = stk_c + init;
-    const gross = sales - cost;
-    const acq   = au / g('rm_avg');
-    const profit = gross - acq;
-    return { sales, stk_c, init, cost, gross, acq, profit };
-  }
-
-  /* ── テーブル行生成 ── */
-  const tr = (label, val, cls = '', indent = false) => {
-    const neg = val < 0 ? 'negative' : '';
-    const ic  = indent ? ' indent' : '';
-    return `<tr class="${cls}"><td class="${ic}">${label}</td><td class="r ${neg}">${fmt(val)}</td></tr>`;
-  };
-  const sec = label =>
-    `<tr class="section-row"><td colspan="2">${label}</td></tr>`;
-
-  function buildNI(d) {
-    const c1 = g('cr_y1'), c5 = g('cr_y5'), mo = g('years') * 12;
-    return [
-      sec('■ 売上'),
-      tr(`ショット売上（割賦1年目 × ${c1}%）`, d.ss1, '', true),
-      tr(`ショット売上（割賦5年目 × ${c5}%）`, d.ss5, '', true),
-      tr('ショット売上合計', d.ss_tot, 'sub'),
-      tr(`ストック売上（${fmt(g('ni_stk_s'))}円 × ${mo}ヶ月）`, d.stk_s, '', true),
-      tr('売上合計', d.sales, 'total'),
-      sec('■ 原価（与信通過率を加味）'),
-      tr(`ショット原価（割賦1年目 × ${c1}%）`, d.sc1, '', true),
-      tr(`ショット原価（割賦5年目 × ${c5}%）`, d.sc5, '', true),
-      tr('残債（割賦1年目）', d.db1, '', true),
-      tr('残債（割賦5年目）', d.db5, '', true),
-      tr('ショット原価合計', d.sc_tot, 'sub'),
-      tr(`ストック原価（${fmt(g('ni_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
-      tr('原価合計', d.cost, 'total'),
-      tr('粗利（売上 − 原価）', d.gross, 'total'),
-      sec('■ 獲得コスト'),
-      tr(`割賦1年目（単価 ÷ ${g('ni_avg_y1')}）`, d.a1, '', true),
-      tr(`割賦5年目（単価 ÷ ${g('ni_avg_y5')}）`, d.a5, '', true),
-      tr('コスト合計', d.acq, 'total'),
-      tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
-    ].join('');
-  }
-
-  function buildNM(d) {
-    const mo = g('years') * 12;
-    return [
-      sec('■ 売上'),
-      tr(`月額売上（${fmt(g('nm_sales'))}円 × ${mo}ヶ月）`, d.sales),
-      sec('■ 原価'),
-      tr(`ストック原価（${fmt(g('nm_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
-      tr('初期制作費', d.init, '', true),
-      tr('原価合計', d.cost, 'total'),
-      tr('粗利（売上 − 原価）', d.gross, 'total'),
-      sec('■ 獲得コスト'),
-      tr(`獲得コスト（単価 ÷ ${g('nm_avg')}）`, d.acq),
-      tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
-    ].join('');
-  }
-
-  function buildRI(d) {
-    const c5 = g('cr_y5'), mo = g('years') * 12;
-    return [
-      sec('■ 売上'),
-      tr(`ショット売上（1件目 × ${c5}%）`, d.ss1, '', true),
-      tr(`ショット売上（2件目 × ${c5}%）`, d.ss2, '', true),
-      tr('ショット売上合計', d.ss_tot, 'sub'),
-      tr(`ストック売上（${fmt(g('ri_stk_s'))}円 × ${mo}ヶ月）`, d.stk_s, '', true),
-      tr('リプレイス売上合計', d.sales, 'total'),
-      sec('■ リプレイス原価（与信通過率を加味）'),
-      tr(`ショット原価（1件目 × ${c5}%）`, d.sc1, '', true),
-      tr(`ショット原価（2件目 × ${c5}%）`, d.sc2, '', true),
-      tr('残債（1件目）', d.db1, '', true),
-      tr('残債（2件目）', d.db2, '', true),
-      tr('ショット原価合計', d.sc_tot, 'sub'),
-      tr(`ストック原価（${fmt(g('ri_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
-      tr('リプレイス原価合計', d.cost, 'total'),
-      tr('粗利（売上 − 原価）', d.gross, 'total'),
-      sec('■ 獲得コスト'),
-      tr(`1件目（単価 ÷ ${g('ri_avg_1')}）`, d.a1, '', true),
-      tr(`2件目（単価 ÷ ${g('ri_avg_2')}）`, d.a2, '', true),
-      tr('コスト合計', d.acq, 'total'),
-      tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
-    ].join('');
-  }
-
-  function buildRM(d) {
-    const mo = g('years') * 12;
-    return [
-      sec('■ 売上'),
-      tr(`月額売上（${fmt(g('rm_sales'))}円 × ${mo}ヶ月）`, d.sales),
-      sec('■ 原価'),
-      tr(`ストック原価（${fmt(g('rm_stk_c'))}円 × ${mo}ヶ月）`, d.stk_c, '', true),
-      tr('初期制作費', d.init, '', true),
-      tr('原価合計', d.cost, 'total'),
-      tr('粗利（売上 − 原価）', d.gross, 'total'),
-      sec('■ 獲得コスト'),
-      tr(`獲得コスト（単価 ÷ ${g('rm_avg')}）`, d.acq),
-      tr('利益（粗利 − 獲得コスト）', d.profit, 'profit'),
-    ].join('');
-  }
-
-  /* ── メイン再計算 ── */
-  function recalculate() {
-    syncMonths();
-
-    const ni = calcNI();
-    const nm = calcNM();
-    const ri = calcRI();
-    const rm = calcRM();
-
-    // サマリー
-    const profits = { ni: ni.profit, nm: nm.profit, ri: ri.profit, rm: rm.profit };
-    const maxProfit = Math.max(...Object.values(profits));
-
-    ['ni', 'nm', 'ri', 'rm'].forEach(k => {
-      const val = profits[k];
-      const sv  = document.getElementById(`sv_${k}`);
-      const card = document.getElementById(`card_${k}`);
-      sv.textContent = fmt(val);
-      sv.classList.toggle('negative', val < 0);
-      card.classList.toggle('best-badge', val === maxProfit && maxProfit > 0);
-    });
-
-    // バーチャート（目盛り付き）
-    const rawMax = Math.max(1, ...Object.values(profits));
-    // 50万単位で切り上げてきれいな目盛りに
-    const unit = rawMax <= 2000000 ? 500000 : rawMax <= 5000000 ? 1000000 : 2000000;
-    const scaleMax = Math.ceil(rawMax / unit) * unit;
-    ['ni', 'nm', 'ri', 'rm'].forEach(k => {
-      const bar = document.getElementById(`bar_${k}`);
-      const pct = Math.max(0, profits[k]) / scaleMax * 100;
-      bar.style.width = pct + '%';
-      bar.textContent = fmt(profits[k]);
-    });
-    // 目盛りラベル生成（0 〜 scaleMax を4等分）
-    const ticks = 4;
-    let scaleHTML = '';
-    for (let i = 0; i <= ticks; i++) {
-      const pct = (i / ticks) * 100;
-      const val = (i / ticks) * scaleMax;
-      const label = val === 0 ? '0' : (val / 10000) + '万';
-      scaleHTML += `<span class="scale-tick" style="left:${pct}%">${label}</span>`;
-    }
-    document.getElementById('chart_scale').innerHTML = scaleHTML;
-
-    // 詳細テーブル
-    document.getElementById('tbody_ni').innerHTML = buildNI(ni);
-    document.getElementById('tbody_nm').innerHTML = buildNM(nm);
-    document.getElementById('tbody_ri').innerHTML = buildRI(ri);
-    document.getElementById('tbody_rm').innerHTML = buildRM(rm);
-  }
-
-  // 初期計算
-  recalculate();
-</script>
+  </script>
 </body>
 </html>
