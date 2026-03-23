@@ -792,6 +792,15 @@
       flex-shrink: 0;
     }
 
+    .compare-desc {
+      font-size: 11px;
+      color: #9ca3af;
+      flex: 1;
+      text-align: right;
+      padding-right: 14px;
+      line-height: 1.4;
+    }
+
     .compare-value {
       font-size: 22px;
       font-weight: 800;
@@ -1120,10 +1129,12 @@
             <div class="compare-head">🔵 新規獲得</div>
             <div class="compare-row">
               <span class="compare-label">生産性</span>
+              <span class="compare-desc" id="cmp_ni_prod_desc"></span>
               <span class="compare-value" id="cmp_ni_prod">—</span>
             </div>
             <div class="compare-row">
               <span class="compare-label">収益性</span>
+              <span class="compare-desc" id="cmp_ni_rev_desc"></span>
               <span class="compare-value" id="cmp_ni_rev">—</span>
             </div>
             <div class="compare-note" id="cmp_ni_note"></div>
@@ -1132,10 +1143,12 @@
             <div class="compare-head">🟢 リプレイス</div>
             <div class="compare-row">
               <span class="compare-label">生産性</span>
+              <span class="compare-desc" id="cmp_ri_prod_desc"></span>
               <span class="compare-value" id="cmp_ri_prod">—</span>
             </div>
             <div class="compare-row">
               <span class="compare-label">収益性</span>
+              <span class="compare-desc" id="cmp_ri_rev_desc"></span>
               <span class="compare-value" id="cmp_ri_rev">—</span>
             </div>
             <div class="compare-note" id="cmp_ri_note"></div>
@@ -1653,16 +1666,19 @@
       const niNoteEl = document.getElementById('cmp_ni_note');
       niProdEl.textContent = pct(niProd) + '%UP';
       niProdEl.className   = 'compare-value' + (niProd < 1 ? ' neutral' : '');
+      document.getElementById('cmp_ni_prod_desc').textContent =
+        `割賦1年目avg ${niAvg} → 月額avg ${nmAvg}（生産性${niProd.toFixed(1)}倍）`;
       if (ni.profit > 0) {
         const niRevRatio = niAdj / ni.profit;
         niRevEl.textContent = pct(niRevRatio) + '%UP';
         niRevEl.className   = 'compare-value' + (niRevRatio < 1 ? ' neutral' : '');
-        niNoteEl.textContent =
-          `割賦1年目avg ${niAvg} → 月額avg ${nmAvg}（生産性${niProd.toFixed(1)}倍）` +
-          `\n月額利益 ${fmt(Math.round(nm.profit))} × ${niProd.toFixed(1)}倍 = ${fmt(Math.round(niAdj))}円 ÷ 割賦利益 ${fmt(Math.round(ni.profit))}円`;
+        document.getElementById('cmp_ni_rev_desc').textContent =
+          `月額利益 ${fmt(Math.round(nm.profit))} × ${niProd.toFixed(1)}倍 = ${fmt(Math.round(niAdj))}円 ÷ 割賦利益 ${fmt(Math.round(ni.profit))}円`;
+        niNoteEl.textContent = '';
       } else {
         niRevEl.textContent  = '—';
         niRevEl.className    = 'compare-value neutral';
+        document.getElementById('cmp_ni_rev_desc').textContent = '';
         niNoteEl.textContent = '割賦利益が0以下のため収益性を算出できません';
       }
 
@@ -1676,16 +1692,19 @@
       const riNoteEl = document.getElementById('cmp_ri_note');
       riProdEl.textContent = pct(riProd) + '%UP';
       riProdEl.className   = 'compare-value' + (riProd < 1 ? ' neutral' : '');
+      document.getElementById('cmp_ri_prod_desc').textContent =
+        `割賦1件目avg ${riAvg} → 月額avg ${rmAvg}（生産性${riProd.toFixed(1)}倍）`;
       if (ri.profit > 0) {
         const riRevRatio = riAdj / ri.profit;
         riRevEl.textContent = pct(riRevRatio) + '%UP';
         riRevEl.className   = 'compare-value' + (riRevRatio < 1 ? ' neutral' : '');
-        riNoteEl.textContent =
-          `割賦1件目avg ${riAvg} → 月額avg ${rmAvg}（生産性${riProd.toFixed(1)}倍）` +
-          `\n月額利益 ${fmt(Math.round(rm.profit))} × ${riProd.toFixed(1)}倍 = ${fmt(Math.round(riAdj))}円 ÷ 割賦利益 ${fmt(Math.round(ri.profit))}円`;
+        document.getElementById('cmp_ri_rev_desc').textContent =
+          `月額利益 ${fmt(Math.round(rm.profit))} × ${riProd.toFixed(1)}倍 = ${fmt(Math.round(riAdj))}円 ÷ 割賦利益 ${fmt(Math.round(ri.profit))}円`;
+        riNoteEl.textContent = '';
       } else {
         riRevEl.textContent  = '—';
         riRevEl.className    = 'compare-value neutral';
+        document.getElementById('cmp_ri_rev_desc').textContent = '';
         riNoteEl.textContent = '割賦利益が0以下のため収益性を算出できません';
       }
     }
