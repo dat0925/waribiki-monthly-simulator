@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -11,720 +12,672 @@
       padding: 0;
     }
 
-    :root {
-      --blue: #1d4ed8;
-      --blue-light: #eff6ff;
-      --blue-mid: #2563eb;
-      --green: #15803d;
-      --green-light:#f0fdf4;
-      --green-mid: #16a34a;
-      --yellow: #fef08a;
-      --yellow-dark:#ca8a04;
-      --gray-bg: #f5f7fa;
-      --gray-border:#e5e7eb;
-      --gray-text: #6b7280;
-      --radius: 8px;
-    }
-
-    body {
-      font-family: 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
-      background: var(--gray-bg);
-      color: #1f2937;
-      font-size: 15px;
-    }
-
-    /* ── HEADER ── */
-    header {
-      background: linear-gradient(135deg, #0f2557, var(--blue-mid));
-      color: #fff;
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,.25);
-    }
-
-    header h1 {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: .03em;
-    }
-
-    header .header-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    header .hint {
-      font-size: 13px;
-      opacity: .75;
-    }
-
-    .btn-reset,
-    .btn-csv {
-      background: rgba(255,255,255,0.15);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 6px;
-      padding: 6px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .15s;
-      white-space: nowrap;
-      font-family: inherit;
-    }
-
-    .btn-reset:hover,
-    .btn-csv:hover {
-      background: rgba(255,255,255,0.28);
-    }
-
-    .btn-reset:active,
-    .btn-csv:active {
-      background: rgba(255,255,255,0.38);
-    }
-
-    .btn-csv-import {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-csv-import input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      font-size: 0;
-    }
-
-    /* ── LAYOUT ── */
-    .container {
-      display: flex;
-      height: calc(100vh - 52px);
-      overflow: hidden;
-    }
-
-    /* ── SIDEBAR ── */
-    aside {
-      width: 320px;
-      flex-shrink: 0;
-      background: #fff;
-      border-right: 1px solid var(--gray-border);
-      overflow-y: auto;
-    }
-
-    .s-section {
-      border-bottom: 1px solid var(--gray-border);
-    }
-
-    .s-head {
-      padding: 12px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: .04em;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      user-select: none;
-    }
-
-    .s-head {
-      border-bottom: 2px solid rgba(0,0,0,.1);
-      transition: filter .15s;
-    }
-
-    .s-head:hover {
-      filter: brightness(.95);
-    }
-
-    .s-head:active {
-      filter: brightness(.9);
-    }
-
-    .s-head .arrow {
-      font-size: 13px;
-      opacity: .65;
-      transition: transform .45s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .s-head.open .arrow {
-      transform: rotate(90deg);
-      opacity: 1;
-    }
-
-    .s-body {
-      overflow: hidden;
-      max-height: 0;
-      padding: 0 14px;
-      transition: max-height .5s cubic-bezier(0.4, 0, 0.2, 1), padding-top .45s cubic-bezier(0.4, 0, 0.2, 1), padding-bottom .45s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .s-body.open {
-      max-height: 2000px;
-      padding: 10px 14px 14px;
-    }
-
-    .s-sub {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--gray-text);
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      margin: 12px 0 6px;
-    }
-
-    .s-sub:first-child {
-      margin-top: 0;
-    }
-
-    .row2 {
-      display: flex;
-      gap: 8px;
-    }
-
-    .row2 .field {
-      flex: 1;
-    }
-
-    .field {
-      margin-bottom: 7px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 12px;
-      color: var(--gray-text);
-      margin-bottom: 4px;
-    }
-
-    .field input {
-      width: 100%;
-      padding: 7px 10px;
-      border: 1px solid #d1d5db;
-      border-radius: 5px;
-      font-size: 14px;
-      text-align: right;
-      font-family: 'Courier New', monospace;
-    }
-
-    .field input:focus {
-      outline: none;
-      border-color: var(--blue-mid);
-      box-shadow: 0 0 0 2px rgba(37,99,235,.15);
-    }
-
-    .field input[readonly] {
-      background: #f9fafb;
-      color: #9ca3af;
-    }
-
-    /* color themes for sidebar sections */
-    .s-head.theme-common {
-      background: #f1f5f9;
-      color: #334155;
-    }
-
-    .s-head.theme-new {
-      background: var(--blue-light);
-      color: var(--blue);
-    }
-
-    .s-head.theme-rep {
-      background: var(--green-light);
-      color: var(--green);
-    }
-
-    /* ── MAIN ── */
-    main {
-      flex: 1;
-      min-width: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    /* ── SUMMARY CARDS ── */
-    .summary-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .sum-card {
-      background: #fff;
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      text-align: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,.08);
-      border-top: 4px solid transparent;
-      position: relative;
-    }
-
-    .sum-card.best-badge::after {
-      content: '★ BEST';
-      position: absolute;
-      top: 6px;
-      right: 8px;
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--yellow-dark);
-      background: var(--yellow);
-      padding: 1px 6px;
-      border-radius: 10px;
-    }
-
-    .sum-card.ni {
-      border-color: var(--blue-mid);
-    }
-
-    .sum-card.nm {
-      border-color: #7c3aed;
-    }
-
-    .sum-card.ri {
-      border-color: var(--green-mid);
-    }
-
-    .sum-card.rm {
-      border-color: #d97706;
-    }
-
-    .sum-card .sc-label {
-      font-size: 13px;
-      color: var(--gray-text);
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    .sum-card .sc-value {
-      font-size: 34px;
-      font-weight: 900;
-      font-family: 'Courier New', monospace;
-      letter-spacing: -.02em;
-    }
-
-    .sum-card.ni .sc-value {
-      color: var(--blue-mid);
-    }
-
-    .sum-card.nm .sc-value {
-      color: #7c3aed;
-    }
-
-    .sum-card.ri .sc-value {
-      color: var(--green-mid);
-    }
-
-    .sum-card.rm .sc-value {
-      color: #d97706;
-    }
-
-    .sc-sub {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-top: 6px;
-    }
-
-    .negative {
-      color: #dc2626 !important;
-    }
-
-    /* ── CHART ── */
-    .chart-wrap {
-      background: #fff;
-      border-radius: var(--radius);
-      padding: 16px 20px;
-      box-shadow: 0 1px 4px rgba(0,0,0,.08);
-    }
-
-    .chart-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--gray-text);
-      margin-bottom: 14px;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-
-    .bar-group {
-      margin-bottom: 12px;
-    }
-
-    .bar-label {
-      font-size: 13px;
-      color: #374151;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-
-    .bar-track {
-      height: 26px;
-      border-radius: 4px;
-      overflow: hidden;
-      position: relative;
-      background: repeating-linear-gradient(
-        to right,
-        rgba(0,0,0,.08) 0px,
-        rgba(0,0,0,.08) 1px,
-        transparent 1px,
-        transparent 25%
-      ), #f3f4f6;
-    }
-
-    .chart-scale {
-      position: relative;
-      height: 20px;
-      margin-top: 2px;
-      border-top: 1px solid #e5e7eb;
-    }
-
-    .scale-tick {
-      position: absolute;
-      font-size: 11px;
-      color: #9ca3af;
-      top: 3px;
-      transform: translateX(-50%);
-      white-space: nowrap;
-    }
-
-    .scale-tick:first-child {
-      transform: translateX(0);
-    }
-
-    .scale-tick:last-child {
-      transform: translateX(-100%);
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      padding-left: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      transition: width .4s ease;
-      white-space: nowrap;
-      min-width: 60px;
-    }
-
-    .bar-fill.ni {
-      background: var(--blue-mid);
-    }
-
-    .bar-fill.nm {
-      background: #7c3aed;
-    }
-
-    .bar-fill.ri {
-      background: var(--green-mid);
-    }
-
-    .bar-fill.rm {
-      background: #d97706;
-    }
-
-    /* ── DETAIL PANELS ── */
-    .panels-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      min-width: 0;
-    }
-
-    .panel {
-      background: #fff;
-      border-radius: var(--radius);
-      overflow: hidden;
-      min-width: 0;
-      box-shadow: 0 1px 4px rgba(0,0,0,.08);
-    }
-
-    .panel.new {
-      border-top: 4px solid var(--blue-mid);
-    }
-
-    .panel.rep {
-      border-top: 4px solid var(--green-mid);
-    }
-
-    .panel-head {
-      padding: 12px 16px;
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    .panel.new .panel-head {
-      background: var(--blue-light);
-      color: var(--blue);
-    }
-
-    .panel.rep .panel-head {
-      background: var(--green-light);
-      color: var(--green);
-    }
-
-    table.dtbl {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    .dtbl th {
-      padding: 8px 12px;
-      text-align: left;
-      font-size: 13px;
-      color: #fff;
-    }
-
-    .dtbl th:first-child {
-      width: auto;
-    }
-
-    .dtbl th:last-child {
-      width: 150px;
-    }
-
-    .panel.new .dtbl th {
-      background: var(--blue);
-    }
-
-    .panel.rep .dtbl th {
-      background: var(--green);
-    }
-
-    .dtbl th.r, .dtbl td.r {
-      text-align: right;
-      font-family: 'Courier New', monospace;
-    }
-
-    .dtbl td {
-      padding: 7px 12px;
-      border-bottom: 1px solid #f3f4f6;
-      word-break: break-all;
-    }
-
-    .dtbl td.r {
-      white-space: nowrap;
-    }
-
-    .dtbl tr:hover td {
-      background: #fafafa;
-    }
-
-    .dtbl tr.section-row td {
-      background: #f8fafc;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--gray-text);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      padding: 6px 12px;
-    }
-
-    .dtbl tr.sub td {
-      background: #f3f4f6;
-      font-weight: 600;
-    }
-
-    .dtbl tr.total td {
-      background: #fef9c3;
-      font-weight: 700;
-    }
-
-    .dtbl tr.profit td {
-      background: var(--yellow);
-      font-weight: 800;
-      font-size: 17px;
-      color: #78350f;
-    }
-
-    .dtbl .indent {
-      padding-left: 22px !important;
-      color: #4b5563;
-    }
-
-    /* ── 与信通過率トグルスイッチ ── */
-    .credit-toggle-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-      padding: 8px 10px;
-      background: #f1f5f9;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .sw {
-      position: relative;
-      width: 46px;
-      height: 26px;
-      flex-shrink: 0;
-    }
-
-    .sw input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .sw-track {
-      position: absolute;
-      inset: 0;
-      background: #d1d5db;
-      border-radius: 13px;
-      cursor: pointer;
-      transition: background .2s;
-    }
-
-    .sw-track::after {
-      content: '';
-      position: absolute;
-      left: 3px;
-      top: 3px;
-      width: 20px;
-      height: 20px;
-      background: #fff;
-      border-radius: 50%;
-      transition: transform .2s;
-      box-shadow: 0 1px 4px rgba(0,0,0,.3);
-    }
-
-    .sw input:checked + .sw-track {
-      background: var(--blue-mid);
-    }
-
-    .sw input:checked + .sw-track::after {
-      transform: translateX(20px);
-    }
-
-    .sw-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #374151;
-    }
-
-    .field input.cr-off {
-      background: #f3f4f6 !important;
-      color: #9ca3af !important;
-      cursor: not-allowed;
-    }
-
-    /* ── RESPONSIVE: スマホ対応 ── */
-    @media (max-width: 768px) {
-      header {
-        padding: 12px 16px;
-      }
-
-      header h1 {
-        font-size: 15px;
-      }
-
-      header .hint {
-        display: none;
-      }
-
-      .container {
-        flex-direction: column;
-        height: auto;
-        overflow: visible;
-      }
-
-      body {
-        overflow-y: auto;
-      }
-
-      aside {
-        width: 100%;
-        border-right: none;
-        border-bottom: 2px solid var(--gray-border);
-        overflow-y: visible;
-      }
-
-      main {
-        overflow-y: visible;
-        padding: 14px;
-        gap: 14px;
-      }
-
-      .summary-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-
-      .sum-card .sc-value {
-        font-size: 20px;
-      }
-
-      .sum-card {
-        padding: 12px;
-      }
-
-      .panels-grid {
-        grid-template-columns: 1fr;
-      }
-
-      table.dtbl {
-        font-size: 12px;
-      }
-
-      .dtbl tr.profit td {
-        font-size: 14px;
-      }
-
-      .dtbl th {
-        font-size: 11px;
-        padding: 6px 8px;
-      }
-
-      .dtbl th:last-child {
-        width: 110px;
-      }
-
-      .dtbl td {
-        padding: 6px 8px;
-        word-break: break-word;
-      }
-
-      .btn-reset,
-      .btn-csv {
-        font-size: 12px;
-        padding: 5px 10px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .summary-row {
-        grid-template-columns: 1fr;
-      }
-    }
+```
+:root {
+  --blue: #1d4ed8;
+  --blue-light: #eff6ff;
+  --blue-mid: #2563eb;
+  --green: #15803d;
+  --green-light:#f0fdf4;
+  --green-mid: #16a34a;
+  --yellow: #fef08a;
+  --yellow-dark:#ca8a04;
+  --gray-bg: #f5f7fa;
+  --gray-border:#e5e7eb;
+  --gray-text: #6b7280;
+  --radius: 8px;
+}
+
+body {
+  font-family: 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+  background: var(--gray-bg);
+  color: #1f2937;
+  font-size: 15px;
+}
+
+/* ── HEADER ── */
+header {
+  background: linear-gradient(135deg, #0f2557, var(--blue-mid));
+  color: #fff;
+  padding: 14px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.hint {
+  font-size: 13px;
+  opacity: .75;
+  white-space: nowrap;
+}
+
+.btn-reset,
+.btn-csv {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.btn-reset:hover,
+.btn-csv:hover {
+  background: rgba(255,255,255,0.28);
+}
+
+.btn-reset:active,
+.btn-csv:active {
+  background: rgba(255,255,255,0.38);
+}
+
+.btn-csv-import {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-csv-import input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+}
+
+/* ── LAYOUT ── */
+.container {
+  display: flex;
+  height: calc(100vh - 52px);
+  overflow: hidden;
+}
+
+/* ── SIDEBAR ── */
+aside {
+  width: 320px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid var(--gray-border);
+  overflow-y: auto;
+}
+
+.s-section {
+  border-bottom: 1px solid var(--gray-border);
+}
+
+.s-head {
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.s-head {
+  border-bottom: 2px solid rgba(0,0,0,.1);
+  transition: filter .15s;
+}
+
+.s-head:hover {
+  filter: brightness(.95);
+}
+
+.s-head:active {
+  filter: brightness(.9);
+}
+
+.s-head .arrow {
+  font-size: 13px;
+  opacity: .65;
+  transition: transform .45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.s-head.open .arrow {
+  transform: rotate(90deg);
+  opacity: 1;
+}
+
+.s-body {
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 14px;
+  transition: max-height .5s cubic-bezier(0.4, 0, 0.2, 1), padding-top .45s cubic-bezier(0.4, 0, 0.2, 1), padding-bottom .45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.s-body.open {
+  max-height: 2000px;
+  padding: 10px 14px 14px;
+}
+
+.s-sub {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-text);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin: 12px 0 6px;
+}
+
+.s-sub:first-child {
+  margin-top: 0;
+}
+
+.row2 {
+  display: flex;
+  gap: 8px;
+}
+
+.row2 .field {
+  flex: 1;
+}
+
+.field {
+  margin-bottom: 7px;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  color: var(--gray-text);
+  margin-bottom: 4px;
+}
+
+.field input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: right;
+  font-family: 'Courier New', monospace;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--blue-mid);
+  box-shadow: 0 0 0 2px rgba(37,99,235,.15);
+}
+
+.field input[readonly] {
+  background: #f9fafb;
+  color: #9ca3af;
+}
+
+/* color themes for sidebar sections */
+.s-head.theme-common {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.s-head.theme-new {
+  background: var(--blue-light);
+  color: var(--blue);
+}
+
+.s-head.theme-rep {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+/* ── MAIN ── */
+main {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ── SUMMARY CARDS ── */
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  min-width: 0;
+}
+
+.sum-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  border-top: 4px solid transparent;
+  position: relative;
+}
+
+.sum-card.best-badge::after {
+  content: '★ BEST';
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--yellow-dark);
+  background: var(--yellow);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.sum-card.ni { border-color: var(--blue-mid); }
+.sum-card.nm { border-color: #7c3aed; }
+.sum-card.ri { border-color: var(--green-mid); }
+.sum-card.rm { border-color: #d97706; }
+
+.sum-card .sc-label {
+  font-size: 13px;
+  color: var(--gray-text);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.sum-card .sc-value {
+  font-size: 34px;
+  font-weight: 900;
+  font-family: 'Courier New', monospace;
+  letter-spacing: -.02em;
+}
+
+.sum-card.ni .sc-value { color: var(--blue-mid); }
+.sum-card.nm .sc-value { color: #7c3aed; }
+.sum-card.ri .sc-value { color: var(--green-mid); }
+.sum-card.rm .sc-value { color: #d97706; }
+
+.sc-sub {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 6px;
+}
+
+.negative {
+  color: #dc2626 !important;
+}
+
+/* ── CHART ── */
+.chart-wrap {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+
+.chart-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-text);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.bar-group {
+  margin-bottom: 12px;
+}
+
+.bar-label {
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.bar-track {
+  height: 26px;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  background: repeating-linear-gradient(
+    to right,
+    rgba(0,0,0,.08) 0px,
+    rgba(0,0,0,.08) 1px,
+    transparent 1px,
+    transparent 25%
+  ), #f3f4f6;
+}
+
+.chart-scale {
+  position: relative;
+  height: 20px;
+  margin-top: 2px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.scale-tick {
+  position: absolute;
+  font-size: 11px;
+  color: #9ca3af;
+  top: 3px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.scale-tick:first-child { transform: translateX(0); }
+.scale-tick:last-child  { transform: translateX(-100%); }
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  transition: width .4s ease;
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+.bar-fill.ni { background: var(--blue-mid); }
+.bar-fill.nm { background: #7c3aed; }
+.bar-fill.ri { background: var(--green-mid); }
+.bar-fill.rm { background: #d97706; }
+
+/* ── DETAIL PANELS ── */
+.panels-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  min-width: 0;
+}
+
+.panel {
+  background: #fff;
+  border-radius: var(--radius);
+  overflow: hidden;
+  min-width: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+
+.panel.new { border-top: 4px solid var(--blue-mid); }
+.panel.rep { border-top: 4px solid var(--green-mid); }
+
+.panel-head {
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.panel.new .panel-head {
+  background: var(--blue-light);
+  color: var(--blue);
+}
+
+.panel.rep .panel-head {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+table.dtbl {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.dtbl th {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 13px;
+  color: #fff;
+}
+
+.dtbl th:first-child { width: auto; }
+.dtbl th:last-child  { width: 150px; }
+
+.panel.new .dtbl th { background: var(--blue); }
+.panel.rep .dtbl th { background: var(--green); }
+
+.dtbl th.r, .dtbl td.r {
+  text-align: right;
+  font-family: 'Courier New', monospace;
+}
+
+.dtbl td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  word-break: break-all;
+}
+
+.dtbl td.r { white-space: nowrap; }
+
+.dtbl tr:hover td { background: #fafafa; }
+
+.dtbl tr.section-row td {
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-text);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 6px 12px;
+}
+
+.dtbl tr.sub td   { background: #f3f4f6; font-weight: 600; }
+.dtbl tr.total td { background: #fef9c3; font-weight: 700; }
+
+.dtbl tr.profit td {
+  background: var(--yellow);
+  font-weight: 800;
+  font-size: 17px;
+  color: #78350f;
+}
+
+.dtbl .indent {
+  padding-left: 22px !important;
+  color: #4b5563;
+}
+
+/* ── 与信通過率トグルスイッチ ── */
+.credit-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.sw {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.sw input { opacity: 0; width: 0; height: 0; }
+
+.sw-track {
+  position: absolute;
+  inset: 0;
+  background: #d1d5db;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.sw-track::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+
+.sw input:checked + .sw-track { background: var(--blue-mid); }
+.sw input:checked + .sw-track::after { transform: translateX(20px); }
+
+.sw-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.field input.cr-off {
+  background: #f3f4f6 !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
+}
+
+/* ════════════════════════════════════
+   RESPONSIVE: スマホ対応
+════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── ヘッダー2段構成 ── */
+  header {
+    padding: 10px 14px 10px;
+    position: sticky;
+    top: 0;
+  }
+
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  header h1 {
+    font-size: 16px;
+    white-space: normal;      /* 折り返しOK */
+    flex: 1 1 100%;           /* 1行目を独占 */
+    line-height: 1.35;
+  }
+
+  .hint {
+    display: none;
+  }
+
+  /* ボタン群を2行目に */
+  .header-right {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .btn-reset,
+  .btn-csv {
+    font-size: 12px;
+    padding: 5px 10px;
+    flex-shrink: 0;
+  }
+
+  /* ── レイアウト ── */
+  .container {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  body {
+    overflow-y: auto;
+  }
+
+  aside {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid var(--gray-border);
+    overflow-y: visible;
+  }
+
+  main {
+    overflow-y: visible;
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .summary-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .sum-card .sc-value { font-size: 20px; }
+  .sum-card { padding: 12px; }
+
+  .panels-grid { grid-template-columns: 1fr; }
+
+  table.dtbl { font-size: 12px; }
+
+  .dtbl tr.profit td { font-size: 14px; }
+
+  .dtbl th {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
+  .dtbl th:last-child { width: 110px; }
+
+  .dtbl td {
+    padding: 6px 8px;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-row {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
   </style>
 </head>
 
 <body>
   <header>
-    <h1>💴 割賦 vs 月額プラン｜収益比較シミュレーター</h1>
-    <div class="header-right">
-      <span class="hint">数値を変更すると自動で再計算されます</span>
-      <button class="btn-csv" onclick="exportCSV()">↓ CSVエクスポート</button>
-      <label class="btn-csv btn-csv-import">
-        ↑ CSVインポート
-        <input type="file" accept=".csv" onchange="importCSV(event)">
-      </label>
-      <button class="btn-reset" onclick="resetToDefaults()">↺ 初期値に戻す</button>
+    <div class="header-inner">
+      <h1>💴 割賦 vs 月額プラン｜収益比較シミュレーター</h1>
+      <div class="header-right">
+        <span class="hint">数値を変更すると自動で再計算されます</span>
+        <button class="btn-csv" onclick="exportCSV()">↓ Export</button>
+        <label class="btn-csv btn-csv-import">
+          ↑ Import
+          <input type="file" accept=".csv" onchange="importCSV(event)">
+        </label>
+        <button class="btn-reset" onclick="resetToDefaults()">↺ Reset</button>
+      </div>
     </div>
   </header>
 
@@ -774,267 +727,270 @@
         </div>
       </div>
 
-      <!-- 新規 / 割賦 -->
-      <div class="s-section">
-        <div class="s-head theme-new open" onclick="toggleSection(this)">
-          🔵 新規獲得 / 割賦プラン <span class="arrow open">▶</span>
+```
+  <!-- 新規 / 割賦 -->
+  <div class="s-section">
+    <div class="s-head theme-new open" onclick="toggleSection(this)">
+      🔵 新規獲得 / 割賦プラン <span class="arrow open">▶</span>
+    </div>
+    <div class="s-body open">
+      <div class="s-sub">ショット売上</div>
+      <div class="row2">
+        <div class="field">
+          <label>割賦1年目（円）</label>
+          <input type="number" id="ni_ss_y1" value="1130000" oninput="saveToStorage();recalculate()">
         </div>
-        <div class="s-body open">
-          <div class="s-sub">ショット売上</div>
-          <div class="row2">
-            <div class="field">
-              <label>割賦1年目（円）</label>
-              <input type="number" id="ni_ss_y1" value="1130000" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>割賦5年目（円）</label>
-              <input type="number" id="ni_ss_y5" value="1440000" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
-          <div class="field">
-            <label>ストック売上（月額・円）</label>
-            <input type="number" id="ni_stk_s" value="3000" oninput="saveToStorage();recalculate()">
-          </div>
-          <div class="s-sub">ショット原価</div>
-          <div class="row2">
-            <div class="field">
-              <label>割賦1年目（円）</label>
-              <input type="number" id="ni_sc_y1" value="240000" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>割賦5年目（円）</label>
-              <input type="number" id="ni_sc_y5" value="240000" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
-          <div class="s-sub">残債</div>
-          <div class="row2">
-            <div class="field">
-              <label>割賦1年目（円）</label>
-              <input type="number" id="ni_db_y1" value="0" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>割賦5年目（円）</label>
-              <input type="number" id="ni_db_y5" value="370000" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
-          <div class="field">
-            <label>ストック原価（月額・円）</label>
-            <input type="number" id="ni_stk_c" value="1319" oninput="saveToStorage();recalculate()">
-          </div>
-          <div class="s-sub">獲得コスト 平均値</div>
-          <div class="row2">
-            <div class="field">
-              <label>割賦1年目</label>
-              <input type="number" id="ni_avg_y1" value="1.5" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>割賦5年目</label>
-              <input type="number" id="ni_avg_y5" value="5.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
+        <div class="field">
+          <label>割賦5年目（円）</label>
+          <input type="number" id="ni_ss_y5" value="1440000" oninput="saveToStorage();recalculate()">
         </div>
       </div>
+      <div class="field">
+        <label>ストック売上（月額・円）</label>
+        <input type="number" id="ni_stk_s" value="3000" oninput="saveToStorage();recalculate()">
+      </div>
+      <div class="s-sub">ショット原価</div>
+      <div class="row2">
+        <div class="field">
+          <label>割賦1年目（円）</label>
+          <input type="number" id="ni_sc_y1" value="240000" oninput="saveToStorage();recalculate()">
+        </div>
+        <div class="field">
+          <label>割賦5年目（円）</label>
+          <input type="number" id="ni_sc_y5" value="240000" oninput="saveToStorage();recalculate()">
+        </div>
+      </div>
+      <div class="s-sub">残債</div>
+      <div class="row2">
+        <div class="field">
+          <label>割賦1年目（円）</label>
+          <input type="number" id="ni_db_y1" value="0" oninput="saveToStorage();recalculate()">
+        </div>
+        <div class="field">
+          <label>割賦5年目（円）</label>
+          <input type="number" id="ni_db_y5" value="370000" oninput="saveToStorage();recalculate()">
+        </div>
+      </div>
+      <div class="field">
+        <label>ストック原価（月額・円）</label>
+        <input type="number" id="ni_stk_c" value="1319" oninput="saveToStorage();recalculate()">
+      </div>
+      <div class="s-sub">獲得コスト 平均値</div>
+      <div class="row2">
+        <div class="field">
+          <label>割賦1年目</label>
+          <input type="number" id="ni_avg_y1" value="1.5" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+        </div>
+        <div class="field">
+          <label>割賦5年目</label>
+          <input type="number" id="ni_avg_y5" value="5.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <!-- 新規 / 月額 -->
-      <div class="s-section">
-        <div class="s-head theme-new open" onclick="toggleSection(this)">
-          🔵 新規獲得 / 月額プラン <span class="arrow open">▶</span>
+  <!-- 新規 / 月額 -->
+  <div class="s-section">
+    <div class="s-head theme-new open" onclick="toggleSection(this)">
+      🔵 新規獲得 / 月額プラン <span class="arrow open">▶</span>
+    </div>
+    <div class="s-body open">
+      <div class="row2">
+        <div class="field">
+          <label>月額売上（月額・円）</label>
+          <input type="number" id="nm_sales" value="15000" oninput="saveToStorage();recalculate()">
         </div>
-        <div class="s-body open">
-          <div class="row2">
-            <div class="field">
-              <label>月額売上（月額・円）</label>
-              <input type="number" id="nm_sales" value="15000" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>ストック原価（月額・円）</label>
-              <input type="number" id="nm_stk_c" value="1908" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
-          <div class="row2">
-            <div class="field">
-              <label>初期制作費（一括・円）</label>
-              <input type="number" id="nm_init_c" value="25000" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>獲得コスト 平均値</label>
-              <input type="number" id="nm_avg" value="3.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
+        <div class="field">
+          <label>ストック原価（月額・円）</label>
+          <input type="number" id="nm_stk_c" value="1908" oninput="saveToStorage();recalculate()">
         </div>
       </div>
+      <div class="row2">
+        <div class="field">
+          <label>初期制作費（一括・円）</label>
+          <input type="number" id="nm_init_c" value="25000" oninput="saveToStorage();recalculate()">
+        </div>
+        <div class="field">
+          <label>獲得コスト 平均値</label>
+          <input type="number" id="nm_avg" value="3.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <!-- リプレイス / 割賦 -->
-      <div class="s-section">
-        <div class="s-head theme-rep open" onclick="toggleSection(this)">
-          🟢 リプレイス / 割賦プラン <span class="arrow open">▶</span>
+  <!-- リプレイス / 割賦 -->
+  <div class="s-section">
+    <div class="s-head theme-rep open" onclick="toggleSection(this)">
+      🟢 リプレイス / 割賦プラン <span class="arrow open">▶</span>
+    </div>
+    <div class="s-body open">
+      <div class="s-sub">ショット売上</div>
+      <div class="row2">
+        <div class="field">
+          <label>1件目（円）</label>
+          <input type="number" id="ri_ss_1" value="1440000" oninput="saveToStorage();recalculate()">
         </div>
-        <div class="s-body open">
-          <div class="s-sub">ショット売上</div>
-          <div class="row2">
-            <div class="field">
-              <label>1件目（円）</label>
-              <input type="number" id="ri_ss_1" value="1440000" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>2件目（円）</label>
-              <input type="number" id="ri_ss_2" value="1440000" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
-          <div class="field">
-            <label>ストック売上（月額・円）</label>
-            <input type="number" id="ri_stk_s" value="3000" oninput="saveToStorage();recalculate()">
-          </div>
-          <div class="s-sub">ショット原価</div>
-          <div class="row2">
-            <div class="field">
-              <label>1件目（円）</label>
-              <input type="number" id="ri_sc_1" value="240000" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>2件目（円）</label>
-              <input type="number" id="ri_sc_2" value="240000" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
-          <div class="s-sub">残債</div>
-          <div class="row2">
-            <div class="field">
-              <label>1件目（円）</label>
-              <input type="number" id="ri_db_1" value="370000" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>2件目（円）</label>
-              <input type="number" id="ri_db_2" value="370000" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
-          <div class="field">
-            <label>ストック原価（月額・円）</label>
-            <input type="number" id="ri_stk_c" value="1319" oninput="saveToStorage();recalculate()">
-          </div>
-          <div class="s-sub">獲得コスト 平均値</div>
-          <div class="row2">
-            <div class="field">
-              <label>1件目</label>
-              <input type="number" id="ri_avg_1" value="5.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>2件目</label>
-              <input type="number" id="ri_avg_2" value="5.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
+        <div class="field">
+          <label>2件目（円）</label>
+          <input type="number" id="ri_ss_2" value="1440000" oninput="saveToStorage();recalculate()">
         </div>
       </div>
+      <div class="field">
+        <label>ストック売上（月額・円）</label>
+        <input type="number" id="ri_stk_s" value="3000" oninput="saveToStorage();recalculate()">
+      </div>
+      <div class="s-sub">ショット原価</div>
+      <div class="row2">
+        <div class="field">
+          <label>1件目（円）</label>
+          <input type="number" id="ri_sc_1" value="240000" oninput="saveToStorage();recalculate()">
+        </div>
+        <div class="field">
+          <label>2件目（円）</label>
+          <input type="number" id="ri_sc_2" value="240000" oninput="saveToStorage();recalculate()">
+        </div>
+      </div>
+      <div class="s-sub">残債</div>
+      <div class="row2">
+        <div class="field">
+          <label>1件目（円）</label>
+          <input type="number" id="ri_db_1" value="370000" oninput="saveToStorage();recalculate()">
+        </div>
+        <div class="field">
+          <label>2件目（円）</label>
+          <input type="number" id="ri_db_2" value="370000" oninput="saveToStorage();recalculate()">
+        </div>
+      </div>
+      <div class="field">
+        <label>ストック原価（月額・円）</label>
+        <input type="number" id="ri_stk_c" value="1319" oninput="saveToStorage();recalculate()">
+      </div>
+      <div class="s-sub">獲得コスト 平均値</div>
+      <div class="row2">
+        <div class="field">
+          <label>1件目</label>
+          <input type="number" id="ri_avg_1" value="5.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+        </div>
+        <div class="field">
+          <label>2件目</label>
+          <input type="number" id="ri_avg_2" value="5.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <!-- リプレイス / 月額 -->
-      <div class="s-section">
-        <div class="s-head theme-rep open" onclick="toggleSection(this)">
-          🟢 リプレイス / 月額プラン <span class="arrow open">▶</span>
+  <!-- リプレイス / 月額 -->
+  <div class="s-section">
+    <div class="s-head theme-rep open" onclick="toggleSection(this)">
+      🟢 リプレイス / 月額プラン <span class="arrow open">▶</span>
+    </div>
+    <div class="s-body open">
+      <div class="row2">
+        <div class="field">
+          <label>月額売上（月額・円）</label>
+          <input type="number" id="rm_sales" value="20000" oninput="saveToStorage();recalculate()">
         </div>
-        <div class="s-body open">
-          <div class="row2">
-            <div class="field">
-              <label>月額売上（月額・円）</label>
-              <input type="number" id="rm_sales" value="20000" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>ストック原価（月額・円）</label>
-              <input type="number" id="rm_stk_c" value="2961" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
-          <div class="row2">
-            <div class="field">
-              <label>初期制作費（一括・円）</label>
-              <input type="number" id="rm_init_c" value="25000" oninput="saveToStorage();recalculate()">
-            </div>
-            <div class="field">
-              <label>獲得コスト 平均値</label>
-              <input type="number" id="rm_avg" value="6.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
-            </div>
-          </div>
+        <div class="field">
+          <label>ストック原価（月額・円）</label>
+          <input type="number" id="rm_stk_c" value="2961" oninput="saveToStorage();recalculate()">
         </div>
       </div>
-    </aside>
+      <div class="row2">
+        <div class="field">
+          <label>初期制作費（一括・円）</label>
+          <input type="number" id="rm_init_c" value="25000" oninput="saveToStorage();recalculate()">
+        </div>
+        <div class="field">
+          <label>獲得コスト 平均値</label>
+          <input type="number" id="rm_avg" value="6.0" step="0.1" min="0.1" oninput="saveToStorage();recalculate()">
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
 
-    <!-- ===== MAIN ===== -->
-    <main>
-      <!-- サマリーカード -->
-      <div class="summary-row">
-        <div class="sum-card ni" id="card_ni">
-          <div class="sc-label">🔵 新規獲得 / 割賦</div>
-          <div class="sc-value" id="sv_ni">—</div>
-          <div class="sc-sub">試算期間内 利益合計（円）</div>
-        </div>
-        <div class="sum-card nm" id="card_nm">
-          <div class="sc-label">🔵 新規獲得 / 月額プラン</div>
-          <div class="sc-value" id="sv_nm">—</div>
-          <div class="sc-sub">試算期間内 利益合計（円）</div>
-        </div>
-        <div class="sum-card ri" id="card_ri">
-          <div class="sc-label">🟢 リプレイス / 割賦</div>
-          <div class="sc-value" id="sv_ri">—</div>
-          <div class="sc-sub">試算期間内 利益合計（円）</div>
-        </div>
-        <div class="sum-card rm" id="card_rm">
-          <div class="sc-label">🟢 リプレイス / 月額プラン</div>
-          <div class="sc-value" id="sv_rm">—</div>
-          <div class="sc-sub">試算期間内 利益合計（円）</div>
-        </div>
-      </div>
+<!-- ===== MAIN ===== -->
+<main>
+  <!-- サマリーカード -->
+  <div class="summary-row">
+    <div class="sum-card ni" id="card_ni">
+      <div class="sc-label">🔵 新規獲得 / 割賦</div>
+      <div class="sc-value" id="sv_ni">—</div>
+      <div class="sc-sub">試算期間内 利益合計（円）</div>
+    </div>
+    <div class="sum-card nm" id="card_nm">
+      <div class="sc-label">🔵 新規獲得 / 月額プラン</div>
+      <div class="sc-value" id="sv_nm">—</div>
+      <div class="sc-sub">試算期間内 利益合計（円）</div>
+    </div>
+    <div class="sum-card ri" id="card_ri">
+      <div class="sc-label">🟢 リプレイス / 割賦</div>
+      <div class="sc-value" id="sv_ri">—</div>
+      <div class="sc-sub">試算期間内 利益合計（円）</div>
+    </div>
+    <div class="sum-card rm" id="card_rm">
+      <div class="sc-label">🟢 リプレイス / 月額プラン</div>
+      <div class="sc-value" id="sv_rm">—</div>
+      <div class="sc-sub">試算期間内 利益合計（円）</div>
+    </div>
+  </div>
 
-      <!-- バーチャート -->
-      <div class="chart-wrap">
-        <div class="chart-title">📊 利益比較チャート</div>
-        <div class="bar-group">
-          <div class="bar-label">🔵 新規獲得 / 割賦</div>
-          <div class="bar-track"><div class="bar-fill ni" id="bar_ni">—</div></div>
-        </div>
-        <div class="bar-group">
-          <div class="bar-label">🔵 新規獲得 / 月額プラン</div>
-          <div class="bar-track"><div class="bar-fill nm" id="bar_nm">—</div></div>
-        </div>
-        <div class="bar-group">
-          <div class="bar-label">🟢 リプレイス / 割賦</div>
-          <div class="bar-track"><div class="bar-fill ri" id="bar_ri">—</div></div>
-        </div>
-        <div class="bar-group">
-          <div class="bar-label">🟢 リプレイス / 月額プラン</div>
-          <div class="bar-track"><div class="bar-fill rm" id="bar_rm">—</div></div>
-        </div>
-        <div class="chart-scale" id="chart_scale"></div>
-      </div>
+  <!-- バーチャート -->
+  <div class="chart-wrap">
+    <div class="chart-title">📊 利益比較チャート</div>
+    <div class="bar-group">
+      <div class="bar-label">🔵 新規獲得 / 割賦</div>
+      <div class="bar-track"><div class="bar-fill ni" id="bar_ni">—</div></div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label">🔵 新規獲得 / 月額プラン</div>
+      <div class="bar-track"><div class="bar-fill nm" id="bar_nm">—</div></div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label">🟢 リプレイス / 割賦</div>
+      <div class="bar-track"><div class="bar-fill ri" id="bar_ri">—</div></div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label">🟢 リプレイス / 月額プラン</div>
+      <div class="bar-track"><div class="bar-fill rm" id="bar_rm">—</div></div>
+    </div>
+    <div class="chart-scale" id="chart_scale"></div>
+  </div>
 
-      <!-- 詳細パネル 2×2 -->
-      <div class="panels-grid">
-        <div class="panel new">
-          <div class="panel-head">🔵 新規獲得 / 割賦プラン 詳細</div>
-          <table class="dtbl">
-            <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
-            <tbody id="tbody_ni"></tbody>
-          </table>
-        </div>
-        <div class="panel new">
-          <div class="panel-head">🔵 新規獲得 / 月額プラン 詳細</div>
-          <table class="dtbl">
-            <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
-            <tbody id="tbody_nm"></tbody>
-          </table>
-        </div>
-        <div class="panel rep">
-          <div class="panel-head">🟢 リプレイス / 割賦プラン 詳細</div>
-          <table class="dtbl">
-            <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
-            <tbody id="tbody_ri"></tbody>
-          </table>
-        </div>
-        <div class="panel rep">
-          <div class="panel-head">🟢 リプレイス / 月額プラン 詳細</div>
-          <table class="dtbl">
-            <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
-            <tbody id="tbody_rm"></tbody>
-          </table>
-        </div>
-      </div>
-    </main>
+  <!-- 詳細パネル 2×2 -->
+  <div class="panels-grid">
+    <div class="panel new">
+      <div class="panel-head">🔵 新規獲得 / 割賦プラン 詳細</div>
+      <table class="dtbl">
+        <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+        <tbody id="tbody_ni"></tbody>
+      </table>
+    </div>
+    <div class="panel new">
+      <div class="panel-head">🔵 新規獲得 / 月額プラン 詳細</div>
+      <table class="dtbl">
+        <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+        <tbody id="tbody_nm"></tbody>
+      </table>
+    </div>
+    <div class="panel rep">
+      <div class="panel-head">🟢 リプレイス / 割賦プラン 詳細</div>
+      <table class="dtbl">
+        <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+        <tbody id="tbody_ri"></tbody>
+      </table>
+    </div>
+    <div class="panel rep">
+      <div class="panel-head">🟢 リプレイス / 月額プラン 詳細</div>
+      <table class="dtbl">
+        <thead><tr><th>項目</th><th class="r">金額（円）</th></tr></thead>
+        <tbody id="tbody_rm"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+```
+
   </div>
 
   <script>
@@ -1247,7 +1203,6 @@
           if (el) el.value = DEFAULTS[id];
         }
       });
-      // 与信通過率トグルの状態を再適用
       applyCreditToggle();
       recalculate();
     }
@@ -1483,7 +1438,6 @@
       const ri = calcRI();
       const rm = calcRM();
 
-      // サマリー
       const profits = { ni: ni.profit, nm: nm.profit, ri: ri.profit, rm: rm.profit };
       const maxProfit = Math.max(...Object.values(profits));
 
@@ -1496,7 +1450,6 @@
         card.classList.toggle('best-badge', val === maxProfit && maxProfit > 0);
       });
 
-      // バーチャート（目盛り付き）
       const rawMax = Math.max(1, ...Object.values(profits));
       const unit = rawMax <= 2000000 ? 500000 : rawMax <= 5000000 ? 1000000 : 2000000;
       const scaleMax = Math.ceil(rawMax / unit) * unit;
@@ -1508,7 +1461,6 @@
         bar.textContent = fmt(profits[k]);
       });
 
-      // 目盛りラベル生成
       const ticks = 4;
       let scaleHTML = '';
       for (let i = 0; i <= ticks; i++) {
@@ -1519,7 +1471,6 @@
       }
       document.getElementById('chart_scale').innerHTML = scaleHTML;
 
-      // 詳細テーブル
       document.getElementById('tbody_ni').innerHTML = buildNI(ni);
       document.getElementById('tbody_nm').innerHTML = buildNM(nm);
       document.getElementById('tbody_ri').innerHTML = buildRI(ri);
@@ -1531,5 +1482,6 @@
     applyCreditToggle();
     recalculate();
   </script>
+
 </body>
 </html>
