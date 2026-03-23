@@ -64,7 +64,8 @@
       opacity: .75;
     }
 
-    .btn-reset {
+    .btn-reset,
+    .btn-csv {
       background: rgba(255,255,255,0.15);
       color: #fff;
       border: 1px solid rgba(255,255,255,0.4);
@@ -78,12 +79,27 @@
       font-family: inherit;
     }
 
-    .btn-reset:hover {
+    .btn-reset:hover,
+    .btn-csv:hover {
       background: rgba(255,255,255,0.28);
     }
 
-    .btn-reset:active {
+    .btn-reset:active,
+    .btn-csv:active {
       background: rgba(255,255,255,0.38);
+    }
+
+    .btn-csv-import {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-csv-import input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      font-size: 0;
     }
 
     /* ── LAYOUT ── */
@@ -683,7 +699,8 @@
         word-break: break-word;
       }
 
-      .btn-reset {
+      .btn-reset,
+      .btn-csv {
         font-size: 12px;
         padding: 5px 10px;
       }
@@ -702,6 +719,11 @@
     <h1>💴 割賦 vs 月額プラン｜収益比較シミュレーター</h1>
     <div class="header-right">
       <span class="hint">数値を変更すると自動で再計算されます</span>
+      <button class="btn-csv" onclick="exportCSV()">↓ CSVエクスポート</button>
+      <label class="btn-csv btn-csv-import">
+        ↑ CSVインポート
+        <input type="file" accept=".csv" onchange="importCSV(event)">
+      </label>
       <button class="btn-reset" onclick="resetToDefaults()">↺ 初期値に戻す</button>
     </div>
   </header>
@@ -1054,6 +1076,130 @@
     };
 
     const STORAGE_KEY = 'waribiki_simulator_v1';
+
+    /* ── CSVラベル定義 ── */
+    const CSV_LABELS = {
+      years:     '年数',
+      credit_apply: '与信通過率を加味する',
+      cr_y1:     '与信通過率_割賦1年目(%)',
+      cr_y5:     '与信通過率_割賦5年目(%)',
+      acq_unit:  '獲得コスト単価(円)',
+      ni_ss_y1:  '新規割賦_ショット売上_1年目(円)',
+      ni_ss_y5:  '新規割賦_ショット売上_5年目(円)',
+      ni_stk_s:  '新規割賦_ストック売上_月額(円)',
+      ni_sc_y1:  '新規割賦_ショット原価_1年目(円)',
+      ni_sc_y5:  '新規割賦_ショット原価_5年目(円)',
+      ni_db_y1:  '新規割賦_残債_1年目(円)',
+      ni_db_y5:  '新規割賦_残債_5年目(円)',
+      ni_stk_c:  '新規割賦_ストック原価_月額(円)',
+      ni_avg_y1: '新規割賦_獲得コスト平均_1年目',
+      ni_avg_y5: '新規割賦_獲得コスト平均_5年目',
+      nm_sales:  '新規月額_月額売上(円)',
+      nm_stk_c:  '新規月額_ストック原価_月額(円)',
+      nm_init_c: '新規月額_初期制作費(円)',
+      nm_avg:    '新規月額_獲得コスト平均',
+      ri_ss_1:   'リプレイス割賦_ショット売上_1件目(円)',
+      ri_ss_2:   'リプレイス割賦_ショット売上_2件目(円)',
+      ri_stk_s:  'リプレイス割賦_ストック売上_月額(円)',
+      ri_sc_1:   'リプレイス割賦_ショット原価_1件目(円)',
+      ri_sc_2:   'リプレイス割賦_ショット原価_2件目(円)',
+      ri_db_1:   'リプレイス割賦_残債_1件目(円)',
+      ri_db_2:   'リプレイス割賦_残債_2件目(円)',
+      ri_stk_c:  'リプレイス割賦_ストック原価_月額(円)',
+      ri_avg_1:  'リプレイス割賦_獲得コスト平均_1件目',
+      ri_avg_2:  'リプレイス割賦_獲得コスト平均_2件目',
+      rm_sales:  'リプレイス月額_月額売上(円)',
+      rm_stk_c:  'リプレイス月額_ストック原価_月額(円)',
+      rm_init_c: 'リプレイス月額_初期制作費(円)',
+      rm_avg:    'リプレイス月額_獲得コスト平均',
+    };
+
+    /* ── CSVエクスポート ── */
+    function exportCSV() {
+      const rows = [['key', 'label', 'value']];
+      Object.keys(DEFAULTS).forEach(id => {
+        const label = CSV_LABELS[id] || id;
+        let value;
+        if (id === 'credit_apply') {
+          value = document.getElementById(id).checked ? 'true' : 'false';
+        } else {
+          value = document.getElementById(id)?.value ?? DEFAULTS[id];
+        }
+        rows.push([id, label, value]);
+      });
+      const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+      const bom = '\uFEFF';
+      const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const now = new Date();
+      const ts = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+      a.download = `simulator_${ts}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    /* ── CSVインポート ── */
+    function importCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const text = e.target.result.replace(/^\uFEFF/, '');
+          const lines = text.split(/\r?\n/).filter(l => l.trim());
+          const header = parseCSVRow(lines[0]);
+          const keyIdx = header.indexOf('key');
+          const valIdx = header.indexOf('value');
+          if (keyIdx === -1 || valIdx === -1) {
+            alert('CSVフォーマットが正しくありません（key・value列が必要です）');
+            return;
+          }
+          const imported = {};
+          for (let i = 1; i < lines.length; i++) {
+            const cols = parseCSVRow(lines[i]);
+            if (cols[keyIdx]) imported[cols[keyIdx]] = cols[valIdx];
+          }
+          Object.keys(DEFAULTS).forEach(id => {
+            if (imported[id] === undefined) return;
+            if (id === 'credit_apply') {
+              document.getElementById(id).checked = imported[id] === 'true';
+            } else {
+              const el = document.getElementById(id);
+              if (el) el.value = imported[id];
+            }
+          });
+          applyCreditToggle();
+          saveToStorage();
+          recalculate();
+          alert('インポートが完了しました。');
+        } catch (err) {
+          alert('CSVの読み込みに失敗しました: ' + err.message);
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file, 'UTF-8');
+    }
+
+    function parseCSVRow(line) {
+      const result = [];
+      let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (inQ) {
+          if (ch === '"' && line[i+1] === '"') { cur += '"'; i++; }
+          else if (ch === '"') inQ = false;
+          else cur += ch;
+        } else {
+          if (ch === '"') inQ = true;
+          else if (ch === ',') { result.push(cur); cur = ''; }
+          else cur += ch;
+        }
+      }
+      result.push(cur);
+      return result;
+    }
 
     /* ── LocalStorage ── */
     function saveToStorage() {
